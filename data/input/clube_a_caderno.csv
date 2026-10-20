@@ -1,0 +1,49 @@
+data;hora;duracao;campo;nome;telefone;tipo;obs
+21-10-26;13:00;120;Campo 1;  Tiago Moreira ;00351913021152;s;
+21/10/2026;11H;1 h;C2;filipa rocha;930464871;S;
+21-10-26;19H;1h30m;campo2;Luís Carvalho;935938257;s;
+21-10-26;10h;1h30; 3 ;  Filipa Rocha ;930464871;s;
+21/10/2026;16.00;2h;court 3;  João Ribeiro ;+351 920835975;p;
+21/10/2026;16.00;2h;court 3;  João Ribeiro ;+351 920835975;p;
+22/10/2026;14.00;90;Campo 2;diogo pires;+351960328098;s;
+22-10-26;15.30;120;Campo 2;Olga Martins;926 539 100;S;
+22-10-26;9:30;1 h;campo3;gonçalo teixeira;+351 927737618;P;
+22-10-26;15.30;1h30; 3 ;SOFIA LEITE;938113683;P;
+2026-10-22;17h30;1 h;court 3;diogo pires;960 328 098;p;
+2026-10-22;17h30;1 h;court 3;Rui Matos;915 000 111;p;marcou ao balcão
+23/10/2026;14H;90;court 1;GONÇALO TEIXEIRA;927 737 618;p;
+23-10-26;16.30;60min;court 1;marta pinto;+351925790937;P;
+2026-10-23;17:30;120;2;Vera Cunha;+351915771488;S;
+2026-10-23;14:30;1h30m; 3 ;  Vera Cunha ;915771488;A;
+23/10/2026;18:30;120min;Campo 3;  Miguel Branco ;929 846 955;A;
+2026-10-24;18:30;1 h;C1;LUÍS CARVALHO;+351 935938257;S;
+2026-10-24;8h30;1h;Campo 2;  Filipa Rocha ;930 464 871;s;
+2026-10-24;12.00;2h;court 2;  Sérgio Lopes ;+351910799612;P;
+2026-10-24;14.00;1 h; 2 ;  João Ribeiro ;+351 920835975;s;
+2026-10-24;14.00;1 h; 2 ;  João Ribeiro ;+351 920835975;s;
+24/10/2026;10h30;90;3;miguel branco;00351929846955;p;
+24-10-26;15h;60min;3;luís carvalho;935938257;s;
+25/10/2026;10:00;2h;campo1;  João Ribeiro ;+351920835975;S;
+2026-10-25;14:00;90min;Campo 2;  Luís Carvalho ;+351 935938257;P;
+2026-10-25;18:30;1h;2;  Gonçalo Teixeira ;+351927737618;S;
+2026-10-25;19:00;1h;3;HELENA BARROS;+351917829893;S;
+2026-10-25;20:00;60min; 3 ;diogo pires;960328098;S;
+2026-10-26;10:00;90;Campo 1;Bruno Costa;932073682;S;
+2026-10-26;18:00;60;Campo 1;vera cunha;+351 915771488;s;
+2026-10-26;9H;120min;court 2;diogo pires;+351 960328098;s;
+26-10-26;11:30;90;campo2;sofia leite;+351938113683;s;
+26-10-26;13.00;60min;C2;JOÃO RIBEIRO;00351920835975;S;
+26-10-26;17:30;120min;court 2;inês fonseca;964 968 362;s;
+26-10-26;14h30;60;C3;  Bruno Costa ;00351932073682;S;
+2026-10-27;8:30;1h30m;C1;ANA SOUSA;00351932402607;P;
+2026-10-27;10:00;120;C1;Pedro Antunes;00351938701999;P;
+27-10-26;13:00;1h30m;C1;  Vera Cunha ;00351915771488;P;
+27/10/2026;9h;60min;Campo 2;JOÃO RIBEIRO;920 835 975;S;
+2026-10-27;11h30;120; 2 ;nuno faria;+351 915215604;s;
+2026-10-27;17:30;60min;C2;Marta Pinto;925790937;P;
+27/10/2026;19.00;1h;2;  Rui Matos ;+351 926911287;P;
+23/10/2026;;1h;2;Sofia Leite;962223344;S;esqueceu-se da hora
+24/10;10h;1h;1;Nuno Faria;913334455;P;
+25/10/2026;21h30;1h;2;Ana Sousa;912223344;S;
+22/10/2026;20h;1h30;Campo 3;Pedro Antunes;91234567;S;telefone incompleto
+26/10/2026;11h;1h;Campo 7;Marta Pinto;253 111 222;A;

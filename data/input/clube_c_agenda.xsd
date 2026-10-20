@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Esquema da agenda exportada pelo Complexo Desportivo Municipal (Clube C).
+     O job valida o XML contra este XSD antes de o ler: se falhar, o processo para. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- hora no formato HH:MM -->
+  <xs:simpleType name="hora">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- campos do complexo: T1, T2, T3 ... -->
+  <xs:simpleType name="codigoCampo">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="T[0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tipoMarcacao">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="aluguer"/>
+      <xs:enumeration value="escola"/>
+      <xs:enumeration value="torneio"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="agenda">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="dia" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="marcacao" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="requerente" type="xs:string"/>
+                    <xs:element name="contacto" type="xs:string"/>
+                  </xs:sequence>
+                  <xs:attribute name="campo" type="codigoCampo" use="required"/>
+                  <xs:attribute name="inicio" type="hora" use="required"/>
+                  <xs:attribute name="fim" type="hora" use="required"/>
+                  <xs:attribute name="tipo" type="tipoMarcacao" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="data" type="xs:date" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="entidade" type="xs:string" use="required"/>
+      <xs:attribute name="nome" type="xs:string"/>
+      <xs:attribute name="exportado" type="xs:dateTime"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

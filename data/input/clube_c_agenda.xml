@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agenda entidade="CDM" nome="Complexo Desportivo Municipal" exportado="2026-10-20T22:30:00">
+  <dia data="2026-10-21">
+    <marcacao campo="T1" inicio="09:00" fim="10:30" tipo="aluguer">
+      <requerente>Tiago Moreira</requerente>
+      <contacto>913021152</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="13:00" fim="14:30" tipo="aluguer">
+      <requerente>Carla Mendes</requerente>
+      <contacto>253287693</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="18:00" fim="19:30" tipo="escola">
+      <requerente>Associação Desportiva Local</requerente>
+      <contacto>253309509</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="09:30" fim="10:30" tipo="aluguer">
+      <requerente>Eduardo Lima</requerente>
+      <contacto>929431506</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="17:30" fim="19:00" tipo="torneio">
+      <requerente>Escola de Ténis Aves</requerente>
+      <contacto>253751020</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-22">
+    <marcacao campo="T1" inicio="10:00" fim="11:30" tipo="aluguer">
+      <requerente>Marta Pinto</requerente>
+      <contacto>253723066</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="14:30" fim="15:30" tipo="escola">
+      <requerente>Escola Básica n.º 2</requerente>
+      <contacto>253196345</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="19:30" fim="20:30" tipo="escola">
+      <requerente>Escola de Ténis Aves</requerente>
+      <contacto>253851389</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="10:30" fim="11:30" tipo="escola">
+      <requerente>Particular</requerente>
+      <contacto>253800239</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="12:30" fim="13:30" tipo="escola">
+      <requerente>Associação Desportiva Local</requerente>
+      <contacto>253197751</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-23">
+    <marcacao campo="T1" inicio="15:30" fim="17:00" tipo="aluguer">
+      <requerente>Helena Barros</requerente>
+      <contacto>917829893</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="12:30" fim="13:30" tipo="torneio">
+      <requerente>Escola de Ténis Aves</requerente>
+      <contacto>253564694</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="10:00" fim="12:00" tipo="escola">
+      <requerente>Escola de Ténis Aves</requerente>
+      <contacto>253113874</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="14:00" fim="15:00" tipo="torneio">
+      <requerente>Escola Básica n.º 2</requerente>
+      <contacto>915215604</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-24">
+    <marcacao campo="T1" inicio="10:30" fim="12:00" tipo="escola">
+      <requerente>Associação Desportiva Local</requerente>
+      <contacto>253830715</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="15:00" fim="16:00" tipo="torneio">
+      <requerente>Particular</requerente>
+      <contacto>929431506</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="17:30" fim="18:30" tipo="escola">
+      <requerente>Associação Desportiva Local</requerente>
+      <contacto>930464871</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="19:30" fim="20:30" tipo="escola">
+      <requerente>Escola Básica n.º 2</requerente>
+      <contacto>925790937</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-25">
+    <marcacao campo="T1" inicio="19:00" fim="20:30" tipo="aluguer">
+      <requerente>Sérgio Lopes</requerente>
+      <contacto>910799612</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="09:30" fim="10:30" tipo="escola">
+      <requerente>Escola Básica n.º 2</requerente>
+      <contacto>960328098</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="13:30" fim="14:30" tipo="escola">
+      <requerente>Particular</requerente>
+      <contacto>253494591</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="19:30" fim="21:00" tipo="aluguer">
+      <requerente>Rui Matos</requerente>
+      <contacto>253452202</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-26">
+    <marcacao campo="T1" inicio="10:00" fim="11:00" tipo="escola">
+      <requerente>Particular</requerente>
+      <contacto>960328098</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="14:30" fim="15:30" tipo="aluguer">
+      <requerente>Eduardo Lima</requerente>
+      <contacto>253365430</contacto>
+    </marcacao>
+    <marcacao campo="T1" inicio="18:30" fim="19:30" tipo="aluguer">
+      <requerente>Olga Martins</requerente>
+      <contacto>926539100</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="13:00" fim="14:00" tipo="torneio">
+      <requerente>Escola Básica n.º 2</requerente>
+      <contacto>253935798</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="15:30" fim="16:30" tipo="aluguer">
+      <requerente>Diogo Pires</requerente>
+      <contacto>960328098</contacto>
+    </marcacao>
+  </dia>
+  <dia data="2026-10-27">
+    <marcacao campo="T1" inicio="15:00" fim="16:30" tipo="aluguer">
+      <requerente>Miguel Branco</requerente>
+      <contacto>929846955</contacto>
+    </marcacao>
+    <marcacao campo="T2" inicio="09:30" fim="11:00" tipo="aluguer">
+      <requerente>Miguel Branco</requerente>
+      <contacto>929846955</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="10:30" fim="12:30" tipo="escola">
+      <requerente>Escola de Ténis Aves</requerente>
+      <contacto>253672360</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="15:00" fim="16:00" tipo="torneio">
+      <requerente>Associação Desportiva Local</requerente>
+      <contacto>960328098</contacto>
+    </marcacao>
+    <marcacao campo="T3" inicio="16:00" fim="18:00" tipo="aluguer">
+      <requerente>Sérgio Lopes</requerente>
+      <contacto>910799612</contacto>
+    </marcacao>
+  </dia>
+</agenda>

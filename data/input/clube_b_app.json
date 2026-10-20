@@ -1,0 +1,670 @@
+{
+  "clube": "TCN",
+  "exportado_em": "2026-10-20T23:00:00",
+  "total": 51,
+  "reservas": [
+    {
+      "id": 5001,
+      "court": "1",
+      "start": "2026-10-21T09:30:00",
+      "end": "2026-10-21T10:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Vera Cunha",
+        "phone": "915771488",
+        "email": "vera.cunha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5002,
+      "court": "court-1",
+      "start": "2026-10-21T12:30:00",
+      "end": "2026-10-21T13:30:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Filipa Rocha",
+        "phone": "+351930464871",
+        "email": "filipa.rocha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5003,
+      "court": "1",
+      "start": "2026-10-21T16:30:00",
+      "end": "2026-10-21T18:00:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Carla Mendes",
+        "phone": "+351921134652",
+        "email": "carla.mendes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5004,
+      "court": "Court 3",
+      "start": "2026-10-21T14:30:00",
+      "end": "2026-10-21T16:00:00",
+      "type": "doubles",
+      "status": "cancelled",
+      "member": {
+        "name": "Helena Barros",
+        "phone": "917829893",
+        "email": "helena.barros@exemplo.pt"
+      }
+    },
+    {
+      "id": 5005,
+      "court": "court-4",
+      "start": "2026-10-21T13:00:00",
+      "end": "2026-10-21T14:30:00",
+      "type": "doubles",
+      "status": "cancelled",
+      "member": {
+        "name": "Miguel Branco",
+        "phone": "+351929846955",
+        "email": "miguel.branco@exemplo.pt"
+      }
+    },
+    {
+      "id": 5006,
+      "court": "4",
+      "start": "2026-10-21T15:30:00",
+      "end": "2026-10-21T16:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Carla Mendes",
+        "phone": "+351921134652",
+        "email": "carla.mendes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5007,
+      "court": "4",
+      "start": "2026-10-21T17:30:00",
+      "end": "2026-10-21T19:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "João Ribeiro",
+        "phone": "920835975",
+        "email": "joão.ribeiro@exemplo.pt"
+      }
+    },
+    {
+      "id": 5007,
+      "court": "4",
+      "start": "2026-10-21T17:30:00",
+      "end": "2026-10-21T19:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "João Ribeiro",
+        "phone": "920835975",
+        "email": "joão.ribeiro@exemplo.pt"
+      }
+    },
+    {
+      "id": 5008,
+      "court": "court-1",
+      "start": "2026-10-22T19:00:00",
+      "end": "2026-10-22T20:00:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Vera Cunha",
+        "phone": "+351915771488",
+        "email": "vera.cunha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5009,
+      "court": "Court 2",
+      "start": "2026-10-22T09:00:00",
+      "end": "2026-10-22T11:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Sérgio Lopes",
+        "phone": "910799612",
+        "email": "sergio.lopes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5010,
+      "court": "court-2",
+      "start": "2026-10-22T16:00:00",
+      "end": "2026-10-22T17:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Vera Cunha",
+        "phone": "915771488",
+        "email": "vera.cunha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5011,
+      "court": "Court 2",
+      "start": "2026-10-22T19:00:00",
+      "end": "2026-10-22T20:00:00",
+      "type": "lesson",
+      "status": "cancelled",
+      "member": {
+        "name": "Miguel Branco",
+        "phone": "929846955",
+        "email": "miguel.branco@exemplo.pt"
+      }
+    },
+    {
+      "id": 5012,
+      "court": "court-4",
+      "start": "2026-10-22T13:00:00",
+      "end": "2026-10-22T15:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Helena Barros",
+        "phone": "917829893",
+        "email": "helena.barros@exemplo.pt"
+      }
+    },
+    {
+      "id": 5013,
+      "court": "Court 1",
+      "start": "2026-10-23T19:00:00",
+      "end": "2026-10-23T20:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Carla Mendes",
+        "phone": "921134652",
+        "email": "carla.mendes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5014,
+      "court": "2",
+      "start": "2026-10-23T10:00:00",
+      "end": "2026-10-23T11:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Helena Barros",
+        "phone": "+351917829893",
+        "email": "helena.barros@exemplo.pt"
+      }
+    },
+    {
+      "id": 5015,
+      "court": "2",
+      "start": "2026-10-23T17:30:00",
+      "end": "2026-10-23T19:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Rita Gomes",
+        "phone": "930741763",
+        "email": "rita.gomes@exemplo.pt"
+      }
+    },
+    {
+      "id": 9001,
+      "court": "2",
+      "start": "2026-10-23T17:30:00",
+      "end": "2026-10-23T19:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Vera Cunha",
+        "phone": "934445566",
+        "email": "vera.cunha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5016,
+      "court": "Court 4",
+      "start": "2026-10-23T12:00:00",
+      "end": "2026-10-23T14:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Inês Fonseca",
+        "phone": "+351964968362",
+        "email": "ines.fonseca@exemplo.pt"
+      }
+    },
+    {
+      "id": 5017,
+      "court": "Court 4",
+      "start": "2026-10-23T19:00:00",
+      "end": "2026-10-23T21:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Vera Cunha",
+        "phone": "+351915771488",
+        "email": "vera.cunha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5018,
+      "court": "court-2",
+      "start": "2026-10-24T11:00:00",
+      "end": "2026-10-24T12:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Nuno Faria",
+        "phone": "915215604",
+        "email": "nuno.faria@exemplo.pt"
+      }
+    },
+    {
+      "id": 5019,
+      "court": "court-2",
+      "start": "2026-10-24T13:00:00",
+      "end": "2026-10-24T14:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "João Ribeiro",
+        "phone": "+351920835975",
+        "email": "joão.ribeiro@exemplo.pt"
+      }
+    },
+    {
+      "id": 5020,
+      "court": "3",
+      "start": "2026-10-24T13:00:00",
+      "end": "2026-10-24T14:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Filipa Rocha",
+        "phone": "930464871",
+        "email": "filipa.rocha@exemplo.pt"
+      }
+    },
+    {
+      "id": 5021,
+      "court": "3",
+      "start": "2026-10-24T17:30:00",
+      "end": "2026-10-24T19:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Miguel Branco",
+        "phone": "929846955",
+        "email": "miguel.branco@exemplo.pt"
+      }
+    },
+    {
+      "id": 5022,
+      "court": "Court 3",
+      "start": "2026-10-24T20:00:00",
+      "end": "2026-10-24T22:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Bruno Costa",
+        "phone": "+351932073682",
+        "email": "bruno.costa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5023,
+      "court": "court-4",
+      "start": "2026-10-24T08:30:00",
+      "end": "2026-10-24T10:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Eduardo Lima",
+        "phone": "+351929431506",
+        "email": "eduardo.lima@exemplo.pt"
+      }
+    },
+    {
+      "id": 5024,
+      "court": "court-4",
+      "start": "2026-10-24T14:30:00",
+      "end": "2026-10-24T16:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Sofia Leite",
+        "phone": "+351938113683",
+        "email": "sofia.leite@exemplo.pt"
+      }
+    },
+    {
+      "id": 5025,
+      "court": "4",
+      "start": "2026-10-24T19:30:00",
+      "end": "2026-10-24T20:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Bruno Costa",
+        "phone": "932073682",
+        "email": "bruno.costa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5026,
+      "court": "court-1",
+      "start": "2026-10-25T17:00:00",
+      "end": "2026-10-25T18:30:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Helena Barros",
+        "phone": "917829893",
+        "email": "helena.barros@exemplo.pt"
+      }
+    },
+    {
+      "id": 5027,
+      "court": "2",
+      "start": "2026-10-25T09:00:00",
+      "end": "2026-10-25T10:30:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Luís Carvalho",
+        "phone": "+351935938257",
+        "email": "luis.carvalho@exemplo.pt"
+      }
+    },
+    {
+      "id": 5028,
+      "court": "court-2",
+      "start": "2026-10-25T12:30:00",
+      "end": "2026-10-25T13:30:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Rita Gomes",
+        "phone": "+351930741763",
+        "email": "rita.gomes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5029,
+      "court": "2",
+      "start": "2026-10-25T17:30:00",
+      "end": "2026-10-25T18:30:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Eduardo Lima",
+        "phone": "+351929431506",
+        "email": "eduardo.lima@exemplo.pt"
+      }
+    },
+    {
+      "id": 5029,
+      "court": "2",
+      "start": "2026-10-25T17:30:00",
+      "end": "2026-10-25T18:30:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Eduardo Lima",
+        "phone": "+351929431506",
+        "email": "eduardo.lima@exemplo.pt"
+      }
+    },
+    {
+      "id": 5030,
+      "court": "3",
+      "start": "2026-10-25T14:00:00",
+      "end": "2026-10-25T16:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Pedro Antunes",
+        "phone": "938701999",
+        "email": "pedro.antunes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5031,
+      "court": "court-4",
+      "start": "2026-10-25T11:30:00",
+      "end": "2026-10-25T13:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Marta Pinto",
+        "phone": "+351925790937",
+        "email": "marta.pinto@exemplo.pt"
+      }
+    },
+    {
+      "id": 5032,
+      "court": "4",
+      "start": "2026-10-25T20:00:00",
+      "end": "2026-10-25T21:00:00",
+      "type": "lesson",
+      "status": "cancelled",
+      "member": {
+        "name": "Eduardo Lima",
+        "phone": "929431506",
+        "email": "eduardo.lima@exemplo.pt"
+      }
+    },
+    {
+      "id": 5033,
+      "court": "Court 4",
+      "start": "2026-10-25T22:00:00",
+      "end": "2026-10-25T23:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Helena Barros",
+        "phone": "917829893",
+        "email": "helena.barros@exemplo.pt"
+      }
+    },
+    {
+      "id": 5034,
+      "court": "court-1",
+      "start": "2026-10-26T14:30:00",
+      "end": "2026-10-26T15:30:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Sérgio Lopes",
+        "phone": "910799612",
+        "email": "sergio.lopes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5035,
+      "court": "court-1",
+      "start": "2026-10-26T16:30:00",
+      "end": "2026-10-26T18:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Gonçalo Teixeira",
+        "phone": "+351927737618",
+        "email": "goncalo.teixeira@exemplo.pt"
+      }
+    },
+    {
+      "id": 5036,
+      "court": "Court 2",
+      "start": "2026-10-26T20:30:00",
+      "end": "2026-10-26T21:30:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Bruno Costa",
+        "phone": "932073682",
+        "email": "bruno.costa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5037,
+      "court": "Court 3",
+      "start": "2026-10-26T12:00:00",
+      "end": "2026-10-26T13:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Marta Pinto",
+        "phone": "+351925790937",
+        "email": "marta.pinto@exemplo.pt"
+      }
+    },
+    {
+      "id": 5038,
+      "court": "3",
+      "start": "2026-10-26T17:30:00",
+      "end": "2026-10-26T18:30:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Marta Pinto",
+        "phone": "925790937",
+        "email": "marta.pinto@exemplo.pt"
+      }
+    },
+    {
+      "id": 5039,
+      "court": "court-4",
+      "start": "2026-10-26T14:30:00",
+      "end": "2026-10-26T16:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Ana Sousa",
+        "phone": "+351932402607",
+        "email": "ana.sousa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5040,
+      "court": "court-4",
+      "start": "2026-10-26T18:00:00",
+      "end": "2026-10-26T20:00:00",
+      "type": "doubles",
+      "status": "cancelled",
+      "member": {
+        "name": "Sérgio Lopes",
+        "phone": "+351910799612",
+        "email": "sergio.lopes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5041,
+      "court": "court-1",
+      "start": "2026-10-27T18:00:00",
+      "end": "2026-10-27T19:00:00",
+      "type": "singles",
+      "status": "confirmed",
+      "member": {
+        "name": "Ana Sousa",
+        "phone": "+351932402607",
+        "email": "ana.sousa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5042,
+      "court": "court-2",
+      "start": "2026-10-27T08:00:00",
+      "end": "2026-10-27T09:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Bruno Costa",
+        "phone": "932073682",
+        "email": "bruno.costa@exemplo.pt"
+      }
+    },
+    {
+      "id": 5043,
+      "court": "court-3",
+      "start": "2026-10-27T12:00:00",
+      "end": "2026-10-27T14:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Pedro Antunes",
+        "phone": "938701999",
+        "email": "pedro.antunes@exemplo.pt"
+      }
+    },
+    {
+      "id": 5044,
+      "court": "court-3",
+      "start": "2026-10-27T15:30:00",
+      "end": "2026-10-27T17:30:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Gonçalo Teixeira",
+        "phone": "927737618",
+        "email": "goncalo.teixeira@exemplo.pt"
+      }
+    },
+    {
+      "id": 5045,
+      "court": "4",
+      "start": "2026-10-27T08:00:00",
+      "end": "2026-10-27T09:30:00",
+      "type": "lesson",
+      "status": "confirmed",
+      "member": {
+        "name": "Miguel Branco",
+        "phone": "929846955",
+        "email": "miguel.branco@exemplo.pt"
+      }
+    },
+    {
+      "id": 5046,
+      "court": "4",
+      "start": "2026-10-27T14:00:00",
+      "end": "2026-10-27T16:00:00",
+      "type": "doubles",
+      "status": "cancelled",
+      "member": {
+        "name": "Miguel Branco",
+        "phone": "929846955",
+        "email": "miguel.branco@exemplo.pt"
+      }
+    },
+    {
+      "id": 5047,
+      "court": "4",
+      "start": "2026-10-27T17:00:00",
+      "end": "2026-10-27T19:00:00",
+      "type": "doubles",
+      "status": "cancelled",
+      "member": {
+        "name": "Nuno Faria",
+        "phone": "+351915215604",
+        "email": "nuno.faria@exemplo.pt"
+      }
+    },
+    {
+      "id": 5048,
+      "court": "court-4",
+      "start": "2026-10-27T20:00:00",
+      "end": "2026-10-27T21:00:00",
+      "type": "doubles",
+      "status": "confirmed",
+      "member": {
+        "name": "Carla Mendes",
+        "phone": "+351921134652",
+        "email": "carla.mendes@exemplo.pt"
+      }
+    }
+  ]
+}
