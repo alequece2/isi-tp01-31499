@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>t2_clube_b_json</name>
+    <description>Clube B (Ténis Clube Norte): lê a exportação da app de sócios em JSON, retira canceladas e repetidas, normaliza, anonimiza e grava na staging.</description>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies></dependencies>
+    <partitionschemas></partitionschemas>
+    <slaveservers></slaveservers>
+    <clusterschemas></clusterschemas>
+    <created_user>31499</created_user>
+    <created_date>2026/10/20 16:00:00.000</created_date>
+    <modified_user>31499</modified_user>
+    <modified_date>2026/10/20 16:00:00.000</modified_date>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+    <notepad>
+      <note>T2 - CLUBE B: APP DE SÓCIOS (JSON)
+A app exporta as reservas em JSON (com dados do sócio dentro de &quot;member&quot;).
+Tiram-se as canceladas, as repetidas (a app às vezes envia a mesma reserva 2 vezes = mesmo id),
+o número do campo é extraído com regex (&quot;Court 2&quot; -&gt; 2) e as datas ISO passam a data + minutos.
+Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note>
+      <xloc>60</xloc><yloc>470</yloc><width>820</width><heigth>100</heigth>
+      <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred><bordercolorgreen>100</bordercolorgreen><bordercolorblue>100</bordercolorblue>
+      <drawshadow>N</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>hacampo_pg</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>postgres</database>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb10bd798cc2fd8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop><from>Ler app (JSON)</from><to>Só confirmadas</to><enabled>Y</enabled></hop>
+    <hop><from>Só confirmadas</from><to>Ignorar canceladas</to><enabled>Y</enabled></hop>
+    <hop><from>Só confirmadas</from><to>Ordenar por id</to><enabled>Y</enabled></hop>
+    <hop><from>Ordenar por id</from><to>Remover repetidas (id)</to><enabled>Y</enabled></hop>
+    <hop><from>Remover repetidas (id)</from><to>Repetidas clube B (CSV)</to><enabled>Y</enabled></hop>
+    <hop><from>Remover repetidas (id)</from><to>Normalizar (regex)</to><enabled>Y</enabled></hop>
+    <hop><from>Normalizar (regex)</from><to>Validar telefone</to><enabled>Y</enabled></hop>
+    <hop><from>Validar telefone</from><to>Converter datas</to><enabled>Y</enabled></hop>
+    <hop><from>Converter datas</from><to>Calcular data e minutos</to><enabled>Y</enabled></hop>
+    <hop><from>Calcular data e minutos</from><to>Traduzir tipo</to><enabled>Y</enabled></hop>
+    <hop><from>Traduzir tipo</from><to>Anonimizar contacto (SHA-256)</to><enabled>Y</enabled></hop>
+    <hop><from>Anonimizar contacto (SHA-256)</from><to>Origem e clube</to><enabled>Y</enabled></hop>
+    <hop><from>Origem e clube</from><to>Campos finais (sem dados pessoais)</to><enabled>Y</enabled></hop>
+    <hop><from>Campos finais (sem dados pessoais)</from><to>Gravar staging (BD)</to><enabled>Y</enabled></hop>
+    
+  </order>
+  <step>
+    <name>Ler app (JSON)</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <include>N</include><include_field/><rownum>N</rownum><addresultfile>N</addresultfile><readurl>N</readurl>
+    <removeSourceField>N</removeSourceField><IsIgnoreEmptyFile>N</IsIgnoreEmptyFile><doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath><defaultPathLeafToNull>Y</defaultPathLeafToNull><rownum_field/><file><name>${Internal.Entry.Current.Directory}/../data/input/clube_b_app.json</name><filemask/><exclude_filemask/><file_required>Y</file_required><include_subfolders>N</include_subfolders></file><fields><field><name>id</name><path>$.reservas[*].id</path><type>Integer</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>court</name><path>$.reservas[*].court</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>start</name><path>$.reservas[*].start</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>end</name><path>$.reservas[*].end</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>type</name><path>$.reservas[*].type</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>status</name><path>$.reservas[*].status</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>nome</name><path>$.reservas[*].member.name</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>telefone</name><path>$.reservas[*].member.phone</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>email</name><path>$.reservas[*].member.email</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field></fields><limit>0</limit><IsInFields>N</IsInFields><IsAFile>N</IsAFile><valueField/>
+    <shortFileFieldName/><pathFieldName/><hiddenFieldName/><lastModificationTimeFieldName/><uriNameFieldName/><rootUriNameFieldName/><extensionFieldName/><sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>60</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Só confirmadas</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <send_true_to>Ordenar por id</send_true_to><send_false_to>Ignorar canceladas</send_false_to>
+    <compare><condition><negated>N</negated><conditions><condition><negated>N</negated><leftvalue>status</leftvalue><function>=</function><rightvalue/><value><name>constant</name><type>String</type><text>confirmed</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value></condition></conditions></condition></compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ignorar canceladas</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>220</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ordenar por id</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <directory>%%java.io.tmpdir%%</directory><prefix>srt</prefix><sort_size>100000</sort_size><free_memory/><compress>N</compress><compress_variable/><unique_rows>N</unique_rows><fields><field><name>id</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Remover repetidas (id)</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <count_rows>N</count_rows><count_field/><reject_duplicate_row>Y</reject_duplicate_row><error_description>reserva repetida</error_description><fields><field><name>id</name><case_insensitive>N</case_insensitive></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Repetidas clube B (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/repetidas_clube_b</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>id</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>court</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>start</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>end</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>motivo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>220</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Normalizar (regex)</name>
+    <type>ReplaceString</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><in_stream_name>court</in_stream_name><out_stream_name/><use_regex>yes</use_regex>
+      <replace_string>\D</replace_string><replace_by_string/><set_empty_string>Y</set_empty_string>
+      <replace_field_by_string/><whole_word>no</whole_word><case_sensitive>no</case_sensitive><is_unicode>no</is_unicode></field><field><in_stream_name>telefone</in_stream_name><out_stream_name/><use_regex>yes</use_regex>
+      <replace_string>\D</replace_string><replace_by_string/><set_empty_string>Y</set_empty_string>
+      <replace_field_by_string/><whole_word>no</whole_word><case_sensitive>no</case_sensitive><is_unicode>no</is_unicode></field><field><in_stream_name>telefone</in_stream_name><out_stream_name/><use_regex>yes</use_regex>
+      <replace_string>^(00351|351)(\d{9})$</replace_string><replace_by_string>$2</replace_by_string><set_empty_string>N</set_empty_string>
+      <replace_field_by_string/><whole_word>no</whole_word><case_sensitive>no</case_sensitive><is_unicode>no</is_unicode></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Validar telefone</name>
+    <type>RegexEval</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <script><![CDATA[^(9[1236]\d{7}|2\d{8})$]]></script><matcher>telefone</matcher><resultfieldname>contacto_valido</resultfieldname>
+    <usevar>N</usevar><allowcapturegroups>N</allowcapturegroups><replacefields>N</replacefields>
+    <canoneq>N</canoneq><caseinsensitive>Y</caseinsensitive><comment>N</comment><dotall>N</dotall><multiline>N</multiline>
+    <unicode>N</unicode><unix>N</unix><fields></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Converter datas</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><select_unspecified>Y</select_unspecified><meta><name>start</name><rename>start</rename><type>Date</type><length>-2</length><precision>-2</precision>
+      <conversion_mask>yyyy-MM-dd'T'HH:mm:ss</conversion_mask><date_format_lenient>false</date_format_lenient><date_format_locale/>
+      <date_format_timezone/><lenient_string_to_number>false</lenient_string_to_number><encoding/><decimal_symbol/>
+      <grouping_symbol/><currency_symbol/><storage_type/></meta><meta><name>end</name><rename>end</rename><type>Date</type><length>-2</length><precision>-2</precision>
+      <conversion_mask>yyyy-MM-dd'T'HH:mm:ss</conversion_mask><date_format_lenient>false</date_format_lenient><date_format_locale/>
+      <date_format_timezone/><lenient_string_to_number>false</lenient_string_to_number><encoding/><decimal_symbol/>
+      <grouping_symbol/><currency_symbol/><storage_type/></meta></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Calcular data e minutos</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <calculation><field_name>data</field_name><calc_type>REMOVE_TIME_FROM_DATE</calc_type><field_a>start</field_a><field_b/><field_c/>
+      <value_type>Date</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>c60</field_name><calc_type>CONSTANT</calc_type><field_a>60</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hi</field_name><calc_type>HOUR_OF_DAY</calc_type><field_a>start</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>mi</field_name><calc_type>MINUTE_OF_HOUR</calc_type><field_a>start</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hf</field_name><calc_type>HOUR_OF_DAY</calc_type><field_a>end</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>mf</field_name><calc_type>MINUTE_OF_HOUR</calc_type><field_a>end</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hi60</field_name><calc_type>MULTIPLY</calc_type><field_a>hi</field_a><field_b>c60</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>inicio_min</field_name><calc_type>ADD</calc_type><field_a>hi60</field_a><field_b>mi</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hf60</field_name><calc_type>MULTIPLY</calc_type><field_a>hf</field_a><field_b>c60</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>fim_min</field_name><calc_type>ADD</calc_type><field_a>hf60</field_a><field_b>mf</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>1040</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Traduzir tipo</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <field_to_use>type</field_to_use><target_field>tipo</target_field><non_match_default>outro</non_match_default><fields><field><source_value>singles</source_value><target_value>singulares</target_value></field><field><source_value>doubles</source_value><target_value>pares</target_value></field><field><source_value>lesson</source_value><target_value>aula</target_value></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>1040</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Anonimizar contacto (SHA-256)</name>
+    <type>CheckSum</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <checksumtype>SHA-256</checksumtype><resultfieldName>cliente_hash</resultfieldName><resultType>hexadecimal</resultType><compatibilityMode>N</compatibilityMode><oldChecksumBehaviour>N</oldChecksumBehaviour><fieldSeparatorString/><evaluationMethod>BYTES</evaluationMethod><fields><field><name>telefone</name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Origem e clube</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><name>origem</name><type>String</type><format/><currency/><decimal/><group/><nullif>app_json</nullif><length>-1</length><precision>-1</precision><set_empty_string>N</set_empty_string></field><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif>TCN</nullif><length>-1</length><precision>-1</precision><set_empty_string>N</set_empty_string></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Campos finais (sem dados pessoais)</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><name>origem</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>clube</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>court</name><rename>campo</rename><length>-2</length><precision>-2</precision></field><field><name>data</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>inicio_min</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>fim_min</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>tipo</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>cliente_hash</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>contacto_valido</name><rename></rename><length>-2</length><precision>-2</precision></field><select_unspecified>N</select_unspecified></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Gravar staging (BD)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><schema>hacampo</schema><table>stg_reservas</table><commit>1000</commit>
+    <truncate>N</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields><field><column_name>origem</column_name><stream_name>origem</stream_name></field><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>campo</column_name><stream_name>campo</stream_name></field><field><column_name>data</column_name><stream_name>data</stream_name></field><field><column_name>inicio_min</column_name><stream_name>inicio_min</stream_name></field><field><column_name>fim_min</column_name><stream_name>fim_min</stream_name></field><field><column_name>tipo</column_name><stream_name>tipo</stream_name></field><field><column_name>cliente_hash</column_name><stream_name>cliente_hash</stream_name></field><field><column_name>contacto_valido</column_name><stream_name>contacto_valido</stream_name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+  </step>
+  <step_error_handling>
+    <error>
+      <source_step>Remover repetidas (id)</source_step>
+      <target_step>Repetidas clube B (CSV)</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename/>
+      <descriptions_valuename>motivo</descriptions_valuename>
+      <fields_valuename/>
+      <codes_valuename/>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
+    </error>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution></slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+</transformation>

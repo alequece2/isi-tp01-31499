@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>t3_clube_c_xml</name>
+    <description>Clube C (Complexo Desportivo Municipal): lê a agenda em XML com XPath, separa as horas, normaliza, anonimiza e grava na staging.</description>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies></dependencies>
+    <partitionschemas></partitionschemas>
+    <slaveservers></slaveservers>
+    <clusterschemas></clusterschemas>
+    <created_user>31499</created_user>
+    <created_date>2026/10/20 16:00:00.000</created_date>
+    <modified_user>31499</modified_user>
+    <modified_date>2026/10/20 16:00:00.000</modified_date>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+    <notepad>
+      <note>T3 - CLUBE C: AGENDA MUNICIPAL (XML)
+O XML já foi validado contra o XSD no job (se estiver mal formado o processo pára antes daqui).
+O XPath /agenda/dia/marcacao dá uma linha por marcação; a data vem do elemento pai (../@data).
+As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; passa a &quot;1&quot; (regex) e o requerente é anonimizado.</note>
+      <xloc>60</xloc><yloc>420</yloc><width>820</width><heigth>90</heigth>
+      <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred><bordercolorgreen>100</bordercolorgreen><bordercolorblue>100</bordercolorblue>
+      <drawshadow>N</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>hacampo_pg</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>postgres</database>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb10bd798cc2fd8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop><from>Ler agenda (XML / XPath)</from><to>Separar hora de início</to><enabled>Y</enabled></hop>
+    <hop><from>Separar hora de início</from><to>Separar hora de fim</to><enabled>Y</enabled></hop>
+    <hop><from>Separar hora de fim</from><to>Calcular minutos</to><enabled>Y</enabled></hop>
+    <hop><from>Calcular minutos</from><to>Normalizar (regex)</to><enabled>Y</enabled></hop>
+    <hop><from>Normalizar (regex)</from><to>Validar contacto</to><enabled>Y</enabled></hop>
+    <hop><from>Validar contacto</from><to>Traduzir tipo</to><enabled>Y</enabled></hop>
+    <hop><from>Traduzir tipo</from><to>Converter data</to><enabled>Y</enabled></hop>
+    <hop><from>Converter data</from><to>Anonimizar contacto (SHA-256)</to><enabled>Y</enabled></hop>
+    <hop><from>Anonimizar contacto (SHA-256)</from><to>Origem e clube</to><enabled>Y</enabled></hop>
+    <hop><from>Origem e clube</from><to>Campos finais (sem dados pessoais)</to><enabled>Y</enabled></hop>
+    <hop><from>Campos finais (sem dados pessoais)</from><to>Gravar staging (BD)</to><enabled>Y</enabled></hop>
+    
+  </order>
+  <step>
+    <name>Ler agenda (XML / XPath)</name>
+    <type>getXMLData</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <include>N</include><include_field/><rownum>N</rownum><addresultfile>N</addresultfile><namespaceaware>N</namespaceaware><ignorecomments>N</ignorecomments>
+    <readurl>N</readurl><validating>N</validating><usetoken>N</usetoken><IsIgnoreEmptyFile>N</IsIgnoreEmptyFile><doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <rownum_field/><encoding>UTF-8</encoding>
+    <file><name>${Internal.Entry.Current.Directory}/../data/input/clube_c_agenda.xml</name><filemask/><exclude_filemask/><file_required>Y</file_required><include_subfolders>N</include_subfolders></file>
+    <fields><field><name>data</name><xpath>../@data</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>campo</name><xpath>@campo</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>inicio</name><xpath>@inicio</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>fim</name><xpath>@fim</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>tipo_xml</name><xpath>@tipo</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>requerente</name><xpath>requerente</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>contacto</name><xpath>contacto</xpath><element_type>node</element_type><result_type>valueof</result_type><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field></fields><limit>0</limit><loopxpath>/agenda/dia/marcacao</loopxpath><IsInFields>N</IsInFields><IsAFile>N</IsAFile><XmlField/><prunePath/>
+    <shortFileFieldName/><pathFieldName/><hiddenFieldName/><lastModificationTimeFieldName/><uriNameFieldName/><rootUriNameFieldName/><extensionFieldName/><sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>60</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Separar hora de início</name>
+    <type>FieldSplitter</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <splitfield>inicio</splitfield><delimiter>:</delimiter><enclosure/><fields><field><name>h_ini</name><id/><idrem>N</idrem><type>Integer</type><format/><group/><decimal/><currency/><length>-1</length><precision>-1</precision><nullif/><ifnull/><trimtype>both</trimtype></field><field><name>m_ini</name><id/><idrem>N</idrem><type>Integer</type><format/><group/><decimal/><currency/><length>-1</length><precision>-1</precision><nullif/><ifnull/><trimtype>both</trimtype></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Separar hora de fim</name>
+    <type>FieldSplitter</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <splitfield>fim</splitfield><delimiter>:</delimiter><enclosure/><fields><field><name>h_fim</name><id/><idrem>N</idrem><type>Integer</type><format/><group/><decimal/><currency/><length>-1</length><precision>-1</precision><nullif/><ifnull/><trimtype>both</trimtype></field><field><name>m_fim</name><id/><idrem>N</idrem><type>Integer</type><format/><group/><decimal/><currency/><length>-1</length><precision>-1</precision><nullif/><ifnull/><trimtype>both</trimtype></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Calcular minutos</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <calculation><field_name>c60</field_name><calc_type>CONSTANT</calc_type><field_a>60</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hi60</field_name><calc_type>MULTIPLY</calc_type><field_a>h_ini</field_a><field_b>c60</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>inicio_min</field_name><calc_type>ADD</calc_type><field_a>hi60</field_a><field_b>m_ini</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>hf60</field_name><calc_type>MULTIPLY</calc_type><field_a>h_fim</field_a><field_b>c60</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>fim_min</field_name><calc_type>ADD</calc_type><field_a>hf60</field_a><field_b>m_fim</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Normalizar (regex)</name>
+    <type>ReplaceString</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><in_stream_name>campo</in_stream_name><out_stream_name/><use_regex>yes</use_regex>
+      <replace_string>^T</replace_string><replace_by_string/><set_empty_string>Y</set_empty_string>
+      <replace_field_by_string/><whole_word>no</whole_word><case_sensitive>no</case_sensitive><is_unicode>no</is_unicode></field><field><in_stream_name>contacto</in_stream_name><out_stream_name/><use_regex>yes</use_regex>
+      <replace_string>\D</replace_string><replace_by_string/><set_empty_string>Y</set_empty_string>
+      <replace_field_by_string/><whole_word>no</whole_word><case_sensitive>no</case_sensitive><is_unicode>no</is_unicode></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Validar contacto</name>
+    <type>RegexEval</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <script><![CDATA[^(9[1236]\d{7}|2\d{8})$]]></script><matcher>contacto</matcher><resultfieldname>contacto_valido</resultfieldname>
+    <usevar>N</usevar><allowcapturegroups>N</allowcapturegroups><replacefields>N</replacefields>
+    <canoneq>N</canoneq><caseinsensitive>Y</caseinsensitive><comment>N</comment><dotall>N</dotall><multiline>N</multiline>
+    <unicode>N</unicode><unix>N</unix><fields></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Traduzir tipo</name>
+    <type>ValueMapper</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <field_to_use>tipo_xml</field_to_use><target_field>tipo</target_field><non_match_default>outro</non_match_default><fields><field><source_value>aluguer</source_value><target_value>aluguer</target_value></field><field><source_value>escola</source_value><target_value>aula</target_value></field><field><source_value>torneio</source_value><target_value>torneio</target_value></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Converter data</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><select_unspecified>Y</select_unspecified><meta><name>data</name><rename>data</rename><type>Date</type><length>-2</length><precision>-2</precision>
+      <conversion_mask>yyyy-MM-dd</conversion_mask><date_format_lenient>false</date_format_lenient><date_format_locale/>
+      <date_format_timezone/><lenient_string_to_number>false</lenient_string_to_number><encoding/><decimal_symbol/>
+      <grouping_symbol/><currency_symbol/><storage_type/></meta></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Anonimizar contacto (SHA-256)</name>
+    <type>CheckSum</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <checksumtype>SHA-256</checksumtype><resultfieldName>cliente_hash</resultfieldName><resultType>hexadecimal</resultType><compatibilityMode>N</compatibilityMode><oldChecksumBehaviour>N</oldChecksumBehaviour><fieldSeparatorString/><evaluationMethod>BYTES</evaluationMethod><fields><field><name>contacto</name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Origem e clube</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><name>origem</name><type>String</type><format/><currency/><decimal/><group/><nullif>agenda_xml</nullif><length>-1</length><precision>-1</precision><set_empty_string>N</set_empty_string></field><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif>CDM</nullif><length>-1</length><precision>-1</precision><set_empty_string>N</set_empty_string></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Campos finais (sem dados pessoais)</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><name>origem</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>clube</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>campo</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>data</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>inicio_min</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>fim_min</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>tipo</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>cliente_hash</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>contacto_valido</name><rename></rename><length>-2</length><precision>-2</precision></field><select_unspecified>N</select_unspecified></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Gravar staging (BD)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><schema>hacampo</schema><table>stg_reservas</table><commit>1000</commit>
+    <truncate>N</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields><field><column_name>origem</column_name><stream_name>origem</stream_name></field><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>campo</column_name><stream_name>campo</stream_name></field><field><column_name>data</column_name><stream_name>data</stream_name></field><field><column_name>inicio_min</column_name><stream_name>inicio_min</stream_name></field><field><column_name>fim_min</column_name><stream_name>fim_min</stream_name></field><field><column_name>tipo</column_name><stream_name>tipo</stream_name></field><field><column_name>cliente_hash</column_name><stream_name>cliente_hash</stream_name></field><field><column_name>contacto_valido</column_name><stream_name>contacto_valido</stream_name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution></slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+</transformation>
