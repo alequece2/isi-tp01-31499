@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Há campo? · quadro</title>
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #fff; --text: #1d1d1f; --muted: #6e6e73; --line: #e5e5ea;
+    --free: #e8f6ec; --free-text: #1e7a3a; --busy: #3a3a3c; --conflict: #d70015; --rain: #0a84ff; --night: #5e5ce6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+  header { padding: 28px 24px 8px; max-width: 1200px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 30px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); margin-top: 4px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 8px 24px 40px; }
+  .seg { display: inline-flex; background: #e3e3e8; border-radius: 10px; padding: 3px; gap: 2px; margin: 12px 12px 0 0; flex-wrap: wrap; }
+  .seg button { border: 0; background: transparent; padding: 7px 14px; border-radius: 8px; font: inherit; color: var(--text); cursor: pointer; }
+  .seg button.on { background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+  .card { background: var(--card); border-radius: 16px; padding: 18px; margin-top: 18px; box-shadow: 0 1px 2px rgba(0,0,0,.05); overflow-x: auto; }
+  table { border-collapse: separate; border-spacing: 3px; min-width: 100%; }
+  th { font-size: 11px; color: var(--muted); font-weight: 500; text-align: left; white-space: nowrap; padding: 0 2px; }
+  th.campo { font-size: 13px; color: var(--text); font-weight: 600; padding-right: 10px; }
+  th.campo small { display: block; color: var(--muted); font-weight: 400; font-size: 11px; }
+  td { height: 38px; min-width: 30px; border-radius: 6px; background: var(--free); position: relative; text-align: center; font-size: 12px; }
+  td.busy { background: var(--busy); color: #fff; }
+  td.conflict { background: var(--conflict); color: #fff; }
+  td.night::after { content: ""; position: absolute; left: 3px; right: 3px; bottom: 3px; height: 3px; border-radius: 2px; background: var(--night); opacity: .7; }
+  td .i { font-size: 13px; line-height: 38px; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: 13px; margin-top: 14px; }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 18px; }
+  .stat { background: var(--card); border-radius: 14px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 24px; letter-spacing: -0.02em; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  .empty { padding: 30px; text-align: center; color: var(--muted); }
+  footer { color: var(--muted); font-size: 12px; text-align: center; padding: 10px 24px 30px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Há campo?</h1>
+  <div class="sub">Campos livres e ocupados, gerado pelo processo ETL (Pentaho Kettle) a partir de <code>data/output/disponibilidade.json</code>. Sem nomes nem contactos.</div>
+</header>
+<main>
+  <div id="clubes" class="seg"></div>
+  <div id="dias" class="seg"></div>
+  <div id="stats" class="stats"></div>
+  <div class="card"><div id="grelha"></div>
+    <div class="legend">
+      <span style="--c: var(--free)">Livre</span>
+      <span style="--c: var(--busy)">Ocupado</span>
+      <span style="--c: var(--conflict)">Conflito (2 reservas)</span>
+      <span style="--c: var(--night)">Já é noite (precisa de luz)</span>
+      <span style="--c: transparent">🌧 risco de chuva (campo descoberto)</span>
+      <span style="--c: transparent">💡✕ jogo à noite num campo sem luz</span>
+    </div>
+  </div>
+  <div id="erro" class="empty" hidden>
+    Não consegui ler o ficheiro. Abre a página através de um servidor local (ver README) ou escolhe o ficheiro:
+    <input type="file" id="ficheiro" accept=".json">
+  </div>
+</main>
+<footer>TP1 · Integração de Sistemas de Informação · 31499</footer>
+<script>
+// Configuração dos clubes (igual à tabela hacampo.clubes / hacampo.campos)
+const CLUBES = {
+  CTV: { nome: "Clube de Ténis do Vale", abre: 8, fecha: 22, campos: { "1": "coberto", "2": "terra batida", "3": "sem luz" } },
+  TCN: { nome: "Ténis Clube Norte", abre: 8, fecha: 23, campos: { "1": "piso rápido", "2": "piso rápido", "3": "sem luz", "4": "coberto" } },
+  CDM: { nome: "Complexo Municipal", abre: 9, fecha: 21, campos: { "1": "piso rápido", "2": "piso rápido", "3": "coberto" } }
+};
+const DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+let dados = [], clube = "CTV", dia = null;
+
+function hhmm(min) { return String(Math.floor(min / 60)).padStart(2, "0") + ":" + String(min % 60).padStart(2, "0"); }
+
+function arrancar(json) {
+  dados = json.ocupado || [];
+  const dias = [...new Set(dados.map(d => d.data))].sort();
+  const q = new URLSearchParams(location.search);
+  dia = dias.includes(q.get("dia")) ? q.get("dia") : dias[0];
+  if (CLUBES[q.get("clube")]) clube = q.get("clube");
+  const segC = document.getElementById("clubes");
+  segC.innerHTML = Object.entries(CLUBES).map(([k, c]) => `<button data-k="${k}">${c.nome}</button>`).join("");
+  segC.onclick = e => { if (e.target.dataset.k) { clube = e.target.dataset.k; desenhar(); } };
+  const segD = document.getElementById("dias");
+  segD.innerHTML = dias.map(d => { const x = new Date(d + "T12:00"); return `<button data-d="${d}">${DIAS_SEMANA[x.getDay()]} ${x.getDate()}</button>`; }).join("");
+  segD.onclick = e => { if (e.target.dataset.d) { dia = e.target.dataset.d; desenhar(); } };
+  desenhar();
+}
+
+function desenhar() {
+  document.querySelectorAll("#clubes button").forEach(b => b.classList.toggle("on", b.dataset.k === clube));
+  document.querySelectorAll("#dias button").forEach(b => b.classList.toggle("on", b.dataset.d === dia));
+  const c = CLUBES[clube];
+  const doDia = dados.filter(d => d.clube === clube && d.data === dia);
+  const mapa = new Map(doDia.map(d => [d.campo + "|" + d.hora, d]));
+  const horas = [];
+  for (let m = c.abre * 60; m < c.fecha * 60; m += 30) horas.push(hhmm(m));
+  let h = "<table><tr><th></th>" + horas.map((x, i) => `<th>${i % 2 ? "" : x}</th>`).join("") + "</tr>";
+  for (const [campo, desc] of Object.entries(c.campos)) {
+    h += `<tr><th class="campo">Campo ${campo}<small>${desc}</small></th>`;
+    for (const x of horas) {
+      const d = mapa.get(campo + "|" + x);
+      if (!d) { h += `<td title="Livre ${x}"></td>`; continue; }
+      const cls = [d.conflito ? "conflict" : "busy", d.precisa_luz ? "night" : ""].join(" ");
+      const icon = d.sem_luz ? "💡✕" : d.risco_chuva ? "🌧" : "";
+      const tip = `${x} ocupado${d.conflito ? " · CONFLITO" : ""}${d.prob_chuva != null ? " · chuva " + d.prob_chuva + "%" : ""}${d.sem_luz ? " · campo sem luz à noite" : ""}`;
+      h += `<td class="${cls}" title="${tip}"><span class="i">${icon}</span></td>`;
+    }
+    h += "</tr>";
+  }
+  document.getElementById("grelha").innerHTML = h + "</table>";
+  const total = Object.keys(c.campos).length * horas.length;
+  const ocup = doDia.length;
+  document.getElementById("stats").innerHTML = [
+    [Math.round(100 * ocup / total) + "%", "ocupação neste dia"],
+    [total - ocup, "blocos de 30 min livres"],
+    [doDia.filter(d => d.conflito).length, "blocos em conflito"],
+    [doDia.filter(d => d.sem_luz || d.risco_chuva).length, "blocos com alerta"]
+  ].map(([v, t]) => `<div class="stat"><b>${v}</b><span>${t}</span></div>`).join("");
+}
+
+fetch("../../data/output/disponibilidade.json")
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(arrancar)
+  .catch(() => {
+    document.getElementById("erro").hidden = false;
+    document.getElementById("ficheiro").onchange = e => e.target.files[0].text().then(t => { document.getElementById("erro").hidden = true; arrancar(JSON.parse(t)); });
+  });
+</script>
+</body>
+</html>
