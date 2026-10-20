@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>t4_consolidar_publicar</name>
+    <description>Junta as reservas dos 3 clubes, remove duplicados, valida contra os campos/horários, parte em blocos de 30 min, cruza com o tempo, deteta conflitos e publica o quadro.</description>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters><parameter><name>LIMITE_CHUVA</name><default_value>50</default_value><description>Probabilidade de chuva (%) a partir da qual se gera alerta nos campos descobertos</description></parameter></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies></dependencies>
+    <partitionschemas></partitionschemas>
+    <slaveservers></slaveservers>
+    <clusterschemas></clusterschemas>
+    <created_user>31499</created_user>
+    <created_date>2026/10/20 16:00:00.000</created_date>
+    <modified_user>31499</modified_user>
+    <modified_date>2026/10/20 16:00:00.000</modified_date>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+    <notepad>
+      <note>T4 - CONSOLIDAR E PUBLICAR
+1. Junta as reservas dos 3 clubes (staging) e remove as repetidas.
+2. Lookup aos campos: rejeita campos que não existem ou reservas fora do horário do clube.
+3. Cada reserva é partida em blocos de 30 min (1h30 = 3 blocos) e cruzada com a previsão do tempo.
+4. Alertas: chuva prevista num campo descoberto; jogo à noite num campo sem luz.
+5. Conflitos: 2 reservas no mesmo campo à mesma hora.
+6. Saídas: tabelas na BD, quadro público (JSON e XML, sem dados pessoais) e relatórios CSV.</note>
+      <xloc>60</xloc><yloc>920</yloc><width>760</width><heigth>130</heigth>
+      <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred><bordercolorgreen>100</bordercolorgreen><bordercolorblue>100</bordercolorblue>
+      <drawshadow>N</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>hacampo_pg</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>postgres</database>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb10bd798cc2fd8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop><from>Ler staging (BD)</from><to>Ordenar reservas</to><enabled>Y</enabled></hop>
+    <hop><from>Ordenar reservas</from><to>Remover duplicados</to><enabled>Y</enabled></hop>
+    <hop><from>Remover duplicados</from><to>Duplicados (CSV)</to><enabled>Y</enabled></hop>
+    <hop><from>Remover duplicados</from><to>Procurar campo (lookup)</to><enabled>Y</enabled></hop>
+    <hop><from>Ler campos e horários (BD)</from><to>Procurar campo (lookup)</to><enabled>Y</enabled></hop>
+    <hop><from>Procurar campo (lookup)</from><to>Campo existe e está aberto?</to><enabled>Y</enabled></hop>
+    <hop><from>Campo existe e está aberto?</from><to>Rejeitadas (CSV)</to><enabled>Y</enabled></hop>
+    <hop><from>Campo existe e está aberto?</from><to>Nº de blocos de 30 min</to><enabled>Y</enabled></hop>
+    <hop><from>Nº de blocos de 30 min</from><to>Partir em blocos (clone)</to><enabled>Y</enabled></hop>
+    <hop><from>Partir em blocos (clone)</from><to>Hora do bloco</to><enabled>Y</enabled></hop>
+    <hop><from>Hora do bloco</from><to>Juntar previsão do tempo</to><enabled>Y</enabled></hop>
+    <hop><from>Ler previsão (BD)</from><to>Juntar previsão do tempo</to><enabled>Y</enabled></hop>
+    <hop><from>Juntar previsão do tempo</from><to>Calcular alertas</to><enabled>Y</enabled></hop>
+    <hop><from>Calcular alertas</from><to>Ordenar blocos</to><enabled>Y</enabled></hop>
+    <hop><from>Ordenar blocos</from><to>Contar reservas por bloco</to><enabled>Y</enabled></hop>
+    <hop><from>Contar reservas por bloco</from><to>Marcar conflitos</to><enabled>Y</enabled></hop>
+    <hop><from>Marcar conflitos</from><to>Gravar ocupacao_slot (BD)</to><enabled>Y</enabled></hop>
+    <hop><from>Marcar conflitos</from><to>Data em texto</to><enabled>Y</enabled></hop>
+    <hop><from>Marcar conflitos</from><to>É conflito?</to><enabled>Y</enabled></hop>
+    <hop><from>Marcar conflitos</from><to>Tem alerta?</to><enabled>Y</enabled></hop>
+    <hop><from>Marcar conflitos</from><to>Ocupação por campo e dia</to><enabled>Y</enabled></hop>
+    <hop><from>Data em texto</from><to>Quadro público (JSON)</to><enabled>Y</enabled></hop>
+    <hop><from>Data em texto</from><to>Quadro público (XML)</to><enabled>Y</enabled></hop>
+    <hop><from>É conflito?</from><to>Conflitos (CSV)</to><enabled>Y</enabled></hop>
+    <hop><from>É conflito?</from><to>Sem conflito</to><enabled>Y</enabled></hop>
+    <hop><from>Tem alerta?</from><to>Alertas (CSV)</to><enabled>Y</enabled></hop>
+    <hop><from>Tem alerta?</from><to>Sem alerta</to><enabled>Y</enabled></hop>
+    <hop><from>Ocupação por campo e dia</from><to>Taxa de ocupação</to><enabled>Y</enabled></hop>
+    <hop><from>Taxa de ocupação</from><to>Gravar ocupacao_diaria (BD)</to><enabled>Y</enabled></hop>
+    <hop><from>Taxa de ocupação</from><to>Ocupação diária (CSV)</to><enabled>Y</enabled></hop>
+    
+  </order>
+  <step>
+    <name>Ler staging (BD)</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><sql>SELECT origem, clube, campo, data, inicio_min, fim_min, tipo, cliente_hash
+FROM hacampo.stg_reservas</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_row><variables_active>N</variables_active><lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>60</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ordenar reservas</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <directory>%%java.io.tmpdir%%</directory><prefix>srt</prefix><sort_size>100000</sort_size><free_memory/><compress>N</compress><compress_variable/><unique_rows>N</unique_rows><fields><field><name>clube</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>campo</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>data</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>inicio_min</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>fim_min</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>cliente_hash</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Remover duplicados</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <count_rows>N</count_rows><count_field/><reject_duplicate_row>Y</reject_duplicate_row><error_description>reserva repetida</error_description><fields><field><name>clube</name><case_insensitive>N</case_insensitive></field><field><name>campo</name><case_insensitive>N</case_insensitive></field><field><name>data</name><case_insensitive>N</case_insensitive></field><field><name>inicio_min</name><case_insensitive>N</case_insensitive></field><field><name>fim_min</name><case_insensitive>N</case_insensitive></field><field><name>cliente_hash</name><case_insensitive>N</case_insensitive></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Duplicados (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/duplicados</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>origem</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>campo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>data</name><type>Date</type><format>yyyy-MM-dd</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>inicio_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>fim_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>motivo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ler campos e horários (BD)</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><sql>SELECT c.clube, c.campo, c.coberto, c.iluminacao,
+       k.abertura * 60 AS abertura_min, k.fecho * 60 AS fecho_min
+FROM hacampo.campos c
+JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_row><variables_active>N</variables_active><lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>60</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Procurar campo (lookup)</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <from>Ler campos e horários (BD)</from><input_sorted>N</input_sorted><preserve_memory>Y</preserve_memory><sorted_list>N</sorted_list><integer_pair>N</integer_pair><lookup><key><name>clube</name><field>clube</field></key><key><name>campo</name><field>campo</field></key><value><name>coberto</name><rename>coberto</rename><default/><type>Boolean</type></value><value><name>iluminacao</name><rename>iluminacao</rename><default/><type>Boolean</type></value><value><name>abertura_min</name><rename>abertura_min</rename><default/><type>Integer</type></value><value><name>fecho_min</name><rename>fecho_min</rename><default/><type>Integer</type></value></lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Campo existe e está aberto?</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <send_true_to>Nº de blocos de 30 min</send_true_to><send_false_to>Rejeitadas (CSV)</send_false_to>
+    <compare><condition><negated>N</negated><conditions><condition><negated>N</negated><leftvalue>abertura_min</leftvalue><function>IS NOT NULL</function><rightvalue/></condition><condition><negated>N</negated><operator>AND</operator><leftvalue>inicio_min</leftvalue><function>&gt;=</function><rightvalue>abertura_min</rightvalue></condition><condition><negated>N</negated><operator>AND</operator><leftvalue>fim_min</leftvalue><function>&lt;=</function><rightvalue>fecho_min</rightvalue></condition><condition><negated>N</negated><operator>AND</operator><leftvalue>fim_min</leftvalue><function>&gt;</function><rightvalue>inicio_min</rightvalue></condition></conditions></condition></compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Rejeitadas (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/rejeitadas</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>origem</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>campo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>data</name><type>Date</type><format>yyyy-MM-dd</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>inicio_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>fim_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>abertura_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>fecho_min</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Nº de blocos de 30 min</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <calculation><field_name>duracao_min</field_name><calc_type>SUBTRACT</calc_type><field_a>fim_min</field_a><field_b>inicio_min</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>c30</field_name><calc_type>CONSTANT</calc_type><field_a>30</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>nr_blocos</field_name><calc_type>DIVIDE</calc_type><field_a>duracao_min</field_a><field_b>c30</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>c1</field_name><calc_type>CONSTANT</calc_type><field_a>1</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>nr_copias</field_name><calc_type>SUBTRACT</calc_type><field_a>nr_blocos</field_a><field_b>c1</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Partir em blocos (clone)</name>
+    <type>CloneRow</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <nrclones>0</nrclones><addcloneflag>N</addcloneflag><cloneflagfield/>
+    <nrcloneinfield>Y</nrcloneinfield><nrclonefield>nr_copias</nrclonefield><addclonenum>Y</addclonenum><clonenumfield>bloco</clonenumfield>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Hora do bloco</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>// cada copia da reserva corresponde a um bloco de 30 minutos
+var minuto = inicio_min + bloco * 30;
+var hh = Math.floor(minuto / 60);
+var mm = minuto % 60;
+function dois(n) { return (n &lt; 10 ? &quot;0&quot; : &quot;&quot;) + n; }
+var hora = dois(hh) + &quot;:&quot; + dois(mm);
+// chave igual a da API: 2026-10-21T18:00
+var chave_meteo = date2str(data, &quot;yyyy-MM-dd&quot;) + &quot;T&quot; + dois(hh) + &quot;:00&quot;;</jsScript_script></jsScript></jsScripts><fields><field><name>hora</name><rename>hora</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>chave_meteo</name><rename>chave_meteo</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>900</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ler previsão (BD)</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><sql>SELECT clube, data_hora, prob_chuva, e_dia
+FROM hacampo.meteo_hora</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_row><variables_active>N</variables_active><lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Juntar previsão do tempo</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <from>Ler previsão (BD)</from><input_sorted>N</input_sorted><preserve_memory>Y</preserve_memory><sorted_list>N</sorted_list><integer_pair>N</integer_pair><lookup><key><name>clube</name><field>clube</field></key><key><name>chave_meteo</name><field>data_hora</field></key><value><name>prob_chuva</name><rename>prob_chuva</rename><default/><type>Integer</type></value><value><name>e_dia</name><rename>e_dia</rename><default/><type>Integer</type></value></lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>760</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Calcular alertas</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>// os campos booleanos vem da BD como objetos Java: compara-se com true/false
+var descoberto = (coberto == false);
+var tem_luz = (iluminacao == true);
+// chuva so interessa nos campos descobertos (limite em %: parametro LIMITE_CHUVA)
+var limite = parseInt(getVariable(&quot;LIMITE_CHUVA&quot;, &quot;50&quot;));
+var risco_chuva = (descoberto &amp;&amp; prob_chuva != null &amp;&amp; prob_chuva &gt;= limite);
+// e_dia = 0 -&gt; ja e de noite, o campo precisa de luz
+var precisa_luz = (e_dia != null &amp;&amp; e_dia == 0);
+var sem_luz = (precisa_luz &amp;&amp; !tem_luz);</jsScript_script></jsScript></jsScripts><fields><field><name>risco_chuva</name><rename>risco_chuva</rename><type>Boolean</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>precisa_luz</name><rename>precisa_luz</rename><type>Boolean</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>sem_luz</name><rename>sem_luz</rename><type>Boolean</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ordenar blocos</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <directory>%%java.io.tmpdir%%</directory><prefix>srt</prefix><sort_size>100000</sort_size><free_memory/><compress>N</compress><compress_variable/><unique_rows>N</unique_rows><fields><field><name>clube</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>campo</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>data</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field><field><name>hora</name><ascending>Y</ascending><case_sensitive>N</case_sensitive><collator_enabled>N</collator_enabled><collator_strength>0</collator_strength><presorted>N</presorted></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>480</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Contar reservas por bloco</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <all_rows>N</all_rows><ignore_aggregate>N</ignore_aggregate><field_ignore/><directory>%%java.io.tmpdir%%</directory><prefix>grp</prefix><add_linenr>N</add_linenr><linenr_fieldname/><give_back_row>N</give_back_row><group><field><name>clube</name></field><field><name>campo</name></field><field><name>data</name></field><field><name>hora</name></field><field><name>coberto</name></field><field><name>abertura_min</name></field><field><name>fecho_min</name></field><field><name>prob_chuva</name></field><field><name>risco_chuva</name></field><field><name>precisa_luz</name></field><field><name>sem_luz</name></field></group><fields><field><aggregate>nr_reservas</aggregate><subject>cliente_hash</subject><type>COUNT_ALL</type><valuefield/></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>340</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Marcar conflitos</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>// mais de uma reserva no mesmo campo, dia e hora
+var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fields><field><name>conflito</name><rename>conflito</rename><type>Boolean</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Gravar ocupacao_slot (BD)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><schema>hacampo</schema><table>ocupacao_slot</table><commit>1000</commit>
+    <truncate>Y</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>campo</column_name><stream_name>campo</stream_name></field><field><column_name>data</column_name><stream_name>data</stream_name></field><field><column_name>hora</column_name><stream_name>hora</stream_name></field><field><column_name>nr_reservas</column_name><stream_name>nr_reservas</stream_name></field><field><column_name>conflito</column_name><stream_name>conflito</stream_name></field><field><column_name>coberto</column_name><stream_name>coberto</stream_name></field><field><column_name>prob_chuva</column_name><stream_name>prob_chuva</stream_name></field><field><column_name>risco_chuva</column_name><stream_name>risco_chuva</stream_name></field><field><column_name>precisa_luz</column_name><stream_name>precisa_luz</stream_name></field><field><column_name>sem_luz</column_name><stream_name>sem_luz</stream_name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>40</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Data em texto</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><select_unspecified>Y</select_unspecified><meta><name>data</name><rename>data</rename><type>String</type><length>-2</length><precision>-2</precision>
+      <conversion_mask>yyyy-MM-dd</conversion_mask><date_format_lenient>false</date_format_lenient><date_format_locale/>
+      <date_format_timezone/><lenient_string_to_number>false</lenient_string_to_number><encoding/><decimal_symbol/>
+      <grouping_symbol/><currency_symbol/><storage_type/></meta></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>200</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Quadro público (JSON)</name>
+    <type>JsonOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <outputValue>outputValue</outputValue><jsonBloc>ocupado</jsonBloc><nrRowsInBloc>0</nrRowsInBloc><operation_type>writetofile</operation_type>
+    <compatibility_mode>N</compatibility_mode><encoding>UTF-8</encoding><addtoresult>Y</addtoresult>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/disponibilidade</name><extention>json</extention><append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time>
+    <create_parent_folder>Y</create_parent_folder><DoNotOpenNewFileInit>N</DoNotOpenNewFileInit><servlet_output>N</servlet_output></file><fields><field><name>clube</name><element>clube</element></field><field><name>campo</name><element>campo</element></field><field><name>data</name><element>data</element></field><field><name>hora</name><element>hora</element></field><field><name>conflito</name><element>conflito</element></field><field><name>prob_chuva</name><element>prob_chuva</element></field><field><name>risco_chuva</name><element>risco_chuva</element></field><field><name>precisa_luz</name><element>precisa_luz</element></field><field><name>sem_luz</name><element>sem_luz</element></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>130</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Quadro público (XML)</name>
+    <type>XMLOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <encoding>UTF-8</encoding><name_space/><xml_main_element>disponibilidade</xml_main_element><xml_repeat_element>bloco</xml_repeat_element>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/disponibilidade</name><extention>xml</extention><servlet_output>N</servlet_output><do_not_open_newfile_init>N</do_not_open_newfile_init>
+    <split>N</split><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat><omit_null_values>N</omit_null_values>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><zipped>N</zipped><splitevery>0</splitevery></file><fields><field><content_type>Element</content_type><name>clube</name><element>clube</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>campo</name><element>campo</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>data</name><element>data</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>hora</name><element>hora</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>conflito</name><element>conflito</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>prob_chuva</name><element>prob_chuva</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>risco_chuva</name><element>risco_chuva</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>precisa_luz</name><element>precisa_luz</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field><field><content_type>Element</content_type><name>sem_luz</name><element>sem_luz</element><type>String</type><format/><currency/><decimal/><group/><nullif/><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>270</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>É conflito?</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <send_true_to>Conflitos (CSV)</send_true_to><send_false_to>Sem conflito</send_false_to>
+    <compare><condition><negated>N</negated><conditions><condition><negated>N</negated><leftvalue>conflito</leftvalue><function>=</function><rightvalue/><value><name>constant</name><type>Boolean</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value></condition></conditions></condition></compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>400</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Conflitos (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/conflitos</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>campo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>data</name><type>Date</type><format>yyyy-MM-dd</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>hora</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>nr_reservas</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>400</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Sem conflito</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>530</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Tem alerta?</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <send_true_to>Alertas (CSV)</send_true_to><send_false_to>Sem alerta</send_false_to>
+    <compare><condition><negated>N</negated><conditions><condition><negated>N</negated><leftvalue>risco_chuva</leftvalue><function>=</function><rightvalue/><value><name>constant</name><type>Boolean</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value></condition><condition><negated>N</negated><operator>OR</operator><leftvalue>sem_luz</leftvalue><function>=</function><rightvalue/><value><name>constant</name><type>Boolean</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value></condition></conditions></condition></compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>620</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Alertas (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/alertas</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>campo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>data</name><type>Date</type><format>yyyy-MM-dd</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>hora</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>prob_chuva</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>risco_chuva</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>sem_luz</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>660</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Sem alerta</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>790</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ocupação por campo e dia</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <all_rows>N</all_rows><ignore_aggregate>N</ignore_aggregate><field_ignore/><directory>%%java.io.tmpdir%%</directory><prefix>grp</prefix><add_linenr>N</add_linenr><linenr_fieldname/><give_back_row>N</give_back_row><group><field><name>clube</name></field><field><name>campo</name></field><field><name>data</name></field><field><name>abertura_min</name></field><field><name>fecho_min</name></field></group><fields><field><aggregate>slots_ocupados</aggregate><subject>hora</subject><type>COUNT_ALL</type><valuefield/></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>820</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Taxa de ocupação</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <calculation><field_name>aberto_min</field_name><calc_type>SUBTRACT</calc_type><field_a>fecho_min</field_a><field_b>abertura_min</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>c30</field_name><calc_type>CONSTANT</calc_type><field_a>30</field_a><field_b/><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>slots_totais</field_name><calc_type>DIVIDE</calc_type><field_a>aberto_min</field_a><field_b>c30</field_b><field_c/>
+      <value_type>Integer</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>c100</field_name><calc_type>CONSTANT</calc_type><field_a>100</field_a><field_b/><field_c/>
+      <value_type>Number</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>x100</field_name><calc_type>MULTIPLY</calc_type><field_a>slots_ocupados</field_a><field_b>c100</field_b><field_c/>
+      <value_type>Number</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>Y</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation><calculation><field_name>taxa_ocupacao</field_name><calc_type>DIVIDE</calc_type><field_a>x100</field_a><field_b>slots_totais</field_b><field_c/>
+      <value_type>Number</value_type><value_length>-1</value_length><value_precision>-1</value_precision><remove>N</remove>
+      <conversion_mask/><decimal_symbol/><grouping_symbol/><currency_symbol/></calculation>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>960</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Gravar ocupacao_diaria (BD)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><schema>hacampo</schema><table>ocupacao_diaria</table><commit>1000</commit>
+    <truncate>Y</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>campo</column_name><stream_name>campo</stream_name></field><field><column_name>data</column_name><stream_name>data</stream_name></field><field><column_name>slots_ocupados</column_name><stream_name>slots_ocupados</stream_name></field><field><column_name>slots_totais</column_name><stream_name>slots_totais</stream_name></field><field><column_name>taxa_ocupacao</column_name><stream_name>taxa_ocupacao</stream_name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>1100</xloc><yloc>580</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ocupação diária (CSV)</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <separator>;</separator><enclosure>"</enclosure><enclosure_forced>N</enclosure_forced><enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header><footer>N</footer><format>DOS</format><compression>None</compression><encoding>UTF-8</encoding><endedLine/>
+    <fileNameInField>N</fileNameInField><fileNameField/><create_parent_folder>Y</create_parent_folder>
+    <file><name>${Internal.Entry.Current.Directory}/../data/output/ocupacao_diaria</name><servlet_output>N</servlet_output><do_not_open_new_file_init>N</do_not_open_new_file_init><extention>csv</extention>
+    <append>N</append><split>N</split><haspartno>N</haspartno><add_date>N</add_date><add_time>N</add_time><SpecifyFormat>N</SpecifyFormat>
+    <date_time_format/><add_to_result_filenames>Y</add_to_result_filenames><pad>N</pad><fast_dump>N</fast_dump><splitevery>0</splitevery></file>
+    <fields><field><name>clube</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>campo</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>data</name><type>Date</type><format>yyyy-MM-dd</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>slots_ocupados</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>slots_totais</name><type>String</type><format/><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field><field><name>taxa_ocupacao</name><type>Number</type><format>0.0</format><currency/><decimal/><group/><nullif/><trim_type>both</trim_type><length>-1</length><precision>-1</precision></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>1100</xloc><yloc>720</yloc><draw>Y</draw></GUI>
+  </step>
+  <step_error_handling>
+    <error>
+      <source_step>Remover duplicados</source_step>
+      <target_step>Duplicados (CSV)</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename/>
+      <descriptions_valuename>motivo</descriptions_valuename>
+      <fields_valuename/>
+      <codes_valuename/>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
+    </error>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution></slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+</transformation>
