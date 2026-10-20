@@ -6,7 +6,7 @@
 **Docentes:** Luís Ferreira e Óscar Ribeiro
 
 **Vídeo de demonstração:** _(link a colocar aqui)_
-**Repositório Git:** _(link a colocar aqui)_
+**Repositório Git:** https://github.com/alequece2/isi-tp01-31499
 
 ---
 
