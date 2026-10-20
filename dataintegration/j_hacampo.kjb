@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>j_hacampo</name>
+  <description>Job principal do TP1: prepara a BD, valida as entradas, corre as 5 transformações pela ordem certa e regista o resultado no log.</description>
+  <extended_description/>
+  <job_version/>
+  <directory>/</directory>
+  <created_user>31499</created_user>
+  <created_date>2026/10/20 16:00:00.000</created_date>
+  <modified_user>31499</modified_user>
+  <modified_date>2026/10/20 16:00:00.000</modified_date>
+  <parameters><parameter><name>DATA_INICIO</name><default_value>2026-10-21</default_value><description>Primeiro dia da semana de reservas</description></parameter><parameter><name>DATA_FIM</name><default_value>2026-10-27</default_value><description>Último dia da semana de reservas</description></parameter><parameter><name>LIMITE_CHUVA</name><default_value>50</default_value><description>Probabilidade de chuva (%) a partir da qual se gera alerta</description></parameter></parameters>
+  <connection>
+    <name>hacampo_pg</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>postgres</database>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb10bd798cc2fd8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <slaveservers></slaveservers>
+  <pass_batchid>N</pass_batchid>
+  <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>START</name>
+      <description/>
+      <type>SPECIAL</type>
+      <attributes/>
+      <start>Y</start><dummy>N</dummy><repeat>N</repeat><schedulerType>0</schedulerType><intervalSeconds>0</intervalSeconds><intervalMinutes>60</intervalMinutes><hour>12</hour><minutes>0</minutes><weekDay>1</weekDay><DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>60</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Preparar base de dados (SQL)</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>-- =====================================================================
+-- hacampo - base de dados do TP1 (PostgreSQL)
+-- Corre automaticamente no inicio do job (entrada &quot;Preparar base de dados (SQL)&quot;).
+-- Pode ser corrido varias vezes (CREATE ... IF NOT EXISTS / ON CONFLICT).
+-- O mesmo SQL esta copiado dentro do job (para os acentos serem lidos em UTF-8).
+-- =====================================================================
+
+CREATE SCHEMA IF NOT EXISTS hacampo;
+
+-- ---------------------------------------------------------------------
+-- Dados mestre (fonte &quot;base de dados relacional&quot;)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS hacampo.clubes (
+    codigo      VARCHAR(5)   PRIMARY KEY,
+    nome        VARCHAR(80)  NOT NULL,
+    cidade      VARCHAR(40),
+    latitude    NUMERIC(8,5) NOT NULL,
+    longitude   NUMERIC(8,5) NOT NULL,
+    abertura    INTEGER      NOT NULL,   -- hora a que abre (ex.: 8)
+    fecho       INTEGER      NOT NULL,   -- hora a que fecha (ex.: 22)
+    origem      VARCHAR(20)  NOT NULL    -- como o clube regista as marcacoes
+);
+
+CREATE TABLE IF NOT EXISTS hacampo.campos (
+    clube       VARCHAR(5)  NOT NULL REFERENCES hacampo.clubes(codigo),
+    campo       VARCHAR(5)  NOT NULL,
+    piso        VARCHAR(30),
+    coberto     BOOLEAN     NOT NULL,
+    iluminacao  BOOLEAN     NOT NULL,
+    PRIMARY KEY (clube, campo)
+);
+
+INSERT INTO hacampo.clubes VALUES
+ ('CTV', 'Clube de Ténis do Vale',        'Braga',     41.55030, -8.42010,  8, 22, 'caderno (CSV)'),
+ ('TCN', 'Ténis Clube Norte',             'Guimarães', 41.44430, -8.29620,  8, 23, 'app (JSON)'),
+ ('CDM', 'Complexo Desportivo Municipal', 'Famalicão', 41.40790, -8.51980,  9, 21, 'agenda (XML)')
+ON CONFLICT (codigo) DO UPDATE SET nome = EXCLUDED.nome, cidade = EXCLUDED.cidade,
+  latitude = EXCLUDED.latitude, longitude = EXCLUDED.longitude, abertura = EXCLUDED.abertura, fecho = EXCLUDED.fecho;
+
+INSERT INTO hacampo.campos VALUES
+ ('CTV', '1', 'piso rápido',     TRUE,  TRUE),
+ ('CTV', '2', 'terra batida',    FALSE, TRUE),
+ ('CTV', '3', 'terra batida',    FALSE, FALSE),
+ ('TCN', '1', 'piso rápido',     FALSE, TRUE),
+ ('TCN', '2', 'piso rápido',     FALSE, TRUE),
+ ('TCN', '3', 'relva sintética', FALSE, FALSE),
+ ('TCN', '4', 'piso rápido',     TRUE,  TRUE),
+ ('CDM', '1', 'piso rápido',     FALSE, TRUE),
+ ('CDM', '2', 'piso rápido',     FALSE, TRUE),
+ ('CDM', '3', 'piso rápido',     TRUE,  TRUE)
+ON CONFLICT (clube, campo) DO UPDATE SET piso = EXCLUDED.piso, coberto = EXCLUDED.coberto, iluminacao = EXCLUDED.iluminacao;
+
+-- ---------------------------------------------------------------------
+-- Staging: as 3 transformacoes de entrada escrevem aqui no mesmo formato
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS hacampo.stg_reservas (
+    origem           VARCHAR(20) NOT NULL,
+    clube            VARCHAR(5)  NOT NULL,
+    campo            VARCHAR(5),
+    data             DATE        NOT NULL,
+    inicio_min       INTEGER     NOT NULL,   -- minutos desde a meia-noite (18:30 -&gt; 1110)
+    fim_min          INTEGER     NOT NULL,
+    tipo             VARCHAR(20),
+    cliente_hash     VARCHAR(64),            -- SHA-256 do contacto (anonimizado)
+    contacto_valido  BOOLEAN
+);
+
+-- Previsao do tempo por clube e por hora (Open-Meteo)
+CREATE TABLE IF NOT EXISTS hacampo.meteo_hora (
+    clube        VARCHAR(5)  NOT NULL,
+    data_hora    VARCHAR(16) NOT NULL,       -- 2026-10-21T18:00
+    prob_chuva   INTEGER,
+    e_dia        INTEGER,                    -- 1 = dia, 0 = noite
+    PRIMARY KEY (clube, data_hora)
+);
+
+-- ---------------------------------------------------------------------
+-- Resultado final
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS hacampo.ocupacao_slot (
+    clube         VARCHAR(5)  NOT NULL,
+    campo         VARCHAR(5)  NOT NULL,
+    data          DATE        NOT NULL,
+    hora          VARCHAR(5)  NOT NULL,      -- inicio do bloco de 30 min
+    nr_reservas   INTEGER     NOT NULL,      -- &gt;1 = conflito
+    conflito      BOOLEAN,
+    coberto       BOOLEAN,
+    prob_chuva    INTEGER,
+    risco_chuva   BOOLEAN,
+    precisa_luz   BOOLEAN,
+    sem_luz       BOOLEAN,
+    PRIMARY KEY (clube, campo, data, hora)
+);
+
+CREATE TABLE IF NOT EXISTS hacampo.ocupacao_diaria (
+    clube            VARCHAR(5) NOT NULL,
+    campo            VARCHAR(5) NOT NULL,
+    data             DATE       NOT NULL,
+    slots_ocupados   INTEGER,
+    slots_totais     INTEGER,
+    taxa_ocupacao    NUMERIC(5,1),
+    PRIMARY KEY (clube, campo, data)
+);
+
+-- Cada execucao recomeca a staging do zero
+TRUNCATE TABLE hacampo.stg_reservas;
+</sql><useVariableSubstitution>F</useVariableSubstitution><sqlfromfile>F</sqlfromfile>
+      <sqlfilename/><sendOneStatement>F</sendOneStatement><connection>hacampo_pg</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>200</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Existem os ficheiros de entrada?</name>
+      <description/>
+      <type>FILES_EXIST</type>
+      <attributes/>
+      <filename/><fields><field><name>${Internal.Entry.Current.Directory}/../data/input/clube_a_caderno.csv</name></field><field><name>${Internal.Entry.Current.Directory}/../data/input/clube_b_app.json</name></field><field><name>${Internal.Entry.Current.Directory}/../data/input/clube_c_agenda.xml</name></field></fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>340</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Validar XML contra XSD</name>
+      <description/>
+      <type>XSD_VALIDATOR</type>
+      <attributes/>
+      <xmlfilename>${Internal.Entry.Current.Directory}/../data/input/clube_c_agenda.xml</xmlfilename>
+      <xsdfilename>${Internal.Entry.Current.Directory}/../data/input/clube_c_agenda.xsd</xsdfilename><allowExternalEntities>N</allowExternalEntities>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>480</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>T0 - Previsão do tempo (API)</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method><trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/t0_meteo_api.ktr</filename><transname/>
+      <arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows><clear_files>N</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time>
+      <loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>620</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Aviso: sem previsão do tempo</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage>Não foi possível obter a previsão do tempo (sem internet?). O processo continua com a última previsão guardada na BD.</logmessage><loglevel>Minimal</loglevel><logsubject>hacampo</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>620</xloc>
+      <yloc>60</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>T1 - Clube A (CSV)</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method><trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/t1_clube_a_csv.ktr</filename><transname/>
+      <arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows><clear_files>N</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time>
+      <loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>760</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>T2 - Clube B (JSON)</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method><trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/t2_clube_b_json.ktr</filename><transname/>
+      <arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows><clear_files>N</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time>
+      <loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>900</xloc>
+      <yloc>200</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>T3 - Clube C (XML)</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method><trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/t3_clube_c_xml.ktr</filename><transname/>
+      <arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows><clear_files>N</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time>
+      <loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>900</xloc>
+      <yloc>400</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>T4 - Consolidar e publicar</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method><trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/t4_consolidar_publicar.ktr</filename><transname/>
+      <arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows><clear_files>N</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time>
+      <loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>760</xloc>
+      <yloc>400</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Registar fim no log</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage>hacampo: processo concluído. Quadro em data/output/disponibilidade.json; conflitos, alertas e erros em data/output/*.csv.</logmessage><loglevel>Minimal</loglevel><logsubject>hacampo</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>620</xloc>
+      <yloc>400</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Sucesso</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>480</xloc>
+      <yloc>400</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Registar erro no log</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage>hacampo: o processo falhou na entrada anterior. Ver as mensagens acima.</logmessage><loglevel>Error</loglevel><logsubject>hacampo</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1080</xloc>
+      <yloc>300</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Abortar</name>
+      <description/>
+      <type>ABORT</type>
+      <attributes/>
+      <message>hacampo: processo abortado</message>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1220</xloc>
+      <yloc>300</yloc>
+      <attributes_kjc/>
+    </entry>
+  </entries>
+  <hops><hop><from>START</from><to>Preparar base de dados (SQL)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop><hop><from>Preparar base de dados (SQL)</from><to>Existem os ficheiros de entrada?</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Existem os ficheiros de entrada?</from><to>Validar XML contra XSD</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Validar XML contra XSD</from><to>T0 - Previsão do tempo (API)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T0 - Previsão do tempo (API)</from><to>T1 - Clube A (CSV)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T1 - Clube A (CSV)</from><to>T2 - Clube B (JSON)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T2 - Clube B (JSON)</from><to>T3 - Clube C (XML)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T3 - Clube C (XML)</from><to>T4 - Consolidar e publicar</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T4 - Consolidar e publicar</from><to>Registar fim no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Registar fim no log</from><to>Sucesso</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T0 - Previsão do tempo (API)</from><to>Aviso: sem previsão do tempo</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Aviso: sem previsão do tempo</from><to>T1 - Clube A (CSV)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop><hop><from>Preparar base de dados (SQL)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Existem os ficheiros de entrada?</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Validar XML contra XSD</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T1 - Clube A (CSV)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T2 - Clube B (JSON)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T3 - Clube C (XML)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T4 - Consolidar e publicar</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Registar erro no log</from><to>Abortar</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop></hops>
+  <notepads><notepad><note>JOB PRINCIPAL - hacampo (&quot;Há campo?&quot;)
+Seta verde = continua se correu bem; vermelha = se falhou; cinzenta = continua sempre.
+Se a API do tempo falhar (sem internet) o job avisa e continua. Qualquer outra falha regista o erro e aborta.</note><xloc>40</xloc><yloc>500</yloc><width>640</width><heigth>70</heigth>
+      <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred><bordercolorgreen>100</bordercolorgreen><bordercolorblue>100</bordercolorblue><drawshadow>N</drawshadow></notepad></notepads>
+</job>
