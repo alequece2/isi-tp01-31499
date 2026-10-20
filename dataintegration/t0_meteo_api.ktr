@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>t0_meteo_api</name>
+    <description>Vai buscar a previsão de chuva e se é dia/noite, por hora, para cada clube (API REST Open-Meteo, JSON).</description>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters><parameter><name>DATA_INICIO</name><default_value>2026-10-21</default_value><description>Primeiro dia da semana de reservas</description></parameter><parameter><name>DATA_FIM</name><default_value>2026-10-27</default_value><description>Último dia da semana de reservas</description></parameter></parameters>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies></dependencies>
+    <partitionschemas></partitionschemas>
+    <slaveservers></slaveservers>
+    <clusterschemas></clusterschemas>
+    <created_user>31499</created_user>
+    <created_date>2026/10/20 16:00:00.000</created_date>
+    <modified_user>31499</modified_user>
+    <modified_date>2026/10/20 16:00:00.000</modified_date>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+    <notepad>
+      <note>T0 - PREVISÃO DO TEMPO (API REST)
+1. Lê os 3 clubes da base de dados e monta o URL da API com a latitude/longitude de cada um.
+2. Faz um pedido HTTP GET por clube.
+3. A resposta vem em JSON: tira-se a lista de horas, a probabilidade de chuva e se é dia.
+4. Grava tudo na tabela meteo_hora (apaga a anterior).</note>
+      <xloc>40</xloc><yloc>20</yloc><width>720</width><heigth>90</heigth>
+      <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred><bordercolorgreen>100</bordercolorgreen><bordercolorblue>100</bordercolorblue>
+      <drawshadow>N</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>hacampo_pg</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>postgres</database>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb10bd798cc2fd8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop><from>Ler clubes (BD)</from><to>Chamar API Open-Meteo</to><enabled>Y</enabled></hop>
+    <hop><from>Chamar API Open-Meteo</from><to>Ler JSON da resposta</to><enabled>Y</enabled></hop>
+    <hop><from>Ler JSON da resposta</from><to>Escolher colunas</to><enabled>Y</enabled></hop>
+    <hop><from>Escolher colunas</from><to>Gravar meteo_hora (BD)</to><enabled>Y</enabled></hop>
+    
+  </order>
+  <step>
+    <name>Ler clubes (BD)</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><sql>SELECT codigo AS clube,
+       'https://api.open-meteo.com/v1/forecast?latitude=' || latitude || '&amp;longitude=' || longitude ||
+       '&amp;hourly=precipitation_probability,is_day&amp;timezone=Europe/Lisbon' ||
+       '&amp;start_date=${DATA_INICIO}&amp;end_date=${DATA_FIM}' AS url
+FROM hacampo.clubes
+ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_row><variables_active>Y</variables_active><lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>60</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Chamar API Open-Meteo</name>
+    <type>HTTP</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <url/><urlInField>Y</urlInField><urlField>url</urlField><encoding>UTF-8</encoding><httpLogin/><httpPassword/><proxyHost/><proxyPort/>
+    <socketTimeout>15000</socketTimeout><connectionTimeout>10000</connectionTimeout><closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
+    <lookup></lookup><result><name>resposta</name><code>http_status</code><response_time/><response_header/></result>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>220</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Ler JSON da resposta</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <include>N</include><include_field/><rownum>N</rownum><addresultfile>N</addresultfile><readurl>N</readurl>
+    <removeSourceField>Y</removeSourceField><IsIgnoreEmptyFile>N</IsIgnoreEmptyFile><doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath><defaultPathLeafToNull>Y</defaultPathLeafToNull><rownum_field/><file><name/><filemask/><exclude_filemask/><file_required>N</file_required><include_subfolders>N</include_subfolders></file><fields><field><name>data_hora</name><path>$.hourly.time[*]</path><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>prob_chuva</name><path>$.hourly.precipitation_probability[*]</path><type>Integer</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field><field><name>e_dia</name><path>$.hourly.is_day[*]</path><type>Integer</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>both</trim_type><repeat>N</repeat></field></fields><limit>0</limit><IsInFields>Y</IsInFields><IsAFile>N</IsAFile><valueField>resposta</valueField>
+    <shortFileFieldName/><pathFieldName/><hiddenFieldName/><lastModificationTimeFieldName/><uriNameFieldName/><rootUriNameFieldName/><extensionFieldName/><sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>380</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Escolher colunas</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields><field><name>clube</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>data_hora</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>prob_chuva</name><rename></rename><length>-2</length><precision>-2</precision></field><field><name>e_dia</name><rename></rename><length>-2</length><precision>-2</precision></field><select_unspecified>N</select_unspecified></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>540</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Gravar meteo_hora (BD)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>hacampo_pg</connection><schema>hacampo</schema><table>meteo_hora</table><commit>1000</commit>
+    <truncate>Y</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>data_hora</column_name><stream_name>data_hora</stream_name></field><field><column_name>prob_chuva</column_name><stream_name>prob_chuva</stream_name></field><field><column_name>e_dia</column_name><stream_name>e_dia</stream_name></field></fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps><input></input><output></output></remotesteps>
+    <GUI><xloc>700</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution></slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+</transformation>
