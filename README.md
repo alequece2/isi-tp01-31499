@@ -3,7 +3,7 @@
 **Unidade curricular:** Integração de Sistemas de Informação (ISI) – 2026/27
 **Curso:** Licenciatura em Engenharia de Sistemas Informáticos (pós-laboral) – IPCA
 **Autor:** Alexandre Magalhães Martins Machado – n.º 31499 (trabalho individual)
-**Docentes:** Luís Ferreira e Óscar Ribeiro
+**Docente:** Óscar Ribeiro
 
 **Vídeo de demonstração:** _(link a colocar aqui)_
 **Repositório Git:** https://github.com/alequece2/isi-tp01-31499
@@ -35,7 +35,7 @@ tp01-31499/
 ├── README.md
 ├── doc/
 │   ├── 31499_doc.pdf              relatório final
-│   ├── relatorio.html             fonte do relatório
+│   ├── relatorio.tex              fonte do relatório (LaTeX, pdflatex)
 │   └── figuras/                   diagramas das transformações e do job
 ├── dataintegration/
 │   ├── j_hacampo.kjb              JOB principal (corre tudo pela ordem certa)

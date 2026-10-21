@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="760" height="300" font-family="Segoe UI, Arial" font-size="11">
+  <defs><marker id="m" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#3d5a75"/></marker></defs>
+  <g fill="#fff" stroke="#3d5a75">
+    <rect x="10" y="20" width="150" height="40" rx="6"/><rect x="10" y="75" width="150" height="40" rx="6"/><rect x="10" y="130" width="150" height="40" rx="6"/>
+    <rect x="10" y="185" width="150" height="40" rx="6"/><rect x="10" y="240" width="150" height="40" rx="6"/>
+    <rect x="215" y="20" width="120" height="40" rx="6"/><rect x="215" y="75" width="120" height="40" rx="6"/><rect x="215" y="130" width="120" height="40" rx="6"/>
+    <rect x="215" y="240" width="120" height="40" rx="6"/>
+    <rect x="390" y="75" width="110" height="95" rx="6" fill="#eef5ff"/>
+    <rect x="550" y="110" width="80" height="60" rx="6" fill="#eef5ff"/>
+  </g>
+  <g fill="#1d1d1f" text-anchor="middle">
+    <text x="85" y="37">Caderno do bar</text><text x="85" y="51" fill="#666">CSV · Clube A</text>
+    <text x="85" y="92">App de sócios</text><text x="85" y="106" fill="#666">JSON · Clube B</text>
+    <text x="85" y="147">Agenda municipal</text><text x="85" y="161" fill="#666">XML + XSD · Clube C</text>
+    <text x="85" y="202">Clubes e campos</text><text x="85" y="216" fill="#666">PostgreSQL</text>
+    <text x="85" y="257">Open-Meteo</text><text x="85" y="271" fill="#666">API REST · JSON</text>
+    <text x="275" y="44">T1 – CSV</text><text x="275" y="99">T2 – JSON</text><text x="275" y="154">T3 – XML</text><text x="275" y="264">T0 – meteo</text>
+    <text x="445" y="112">stg_reservas</text><text x="445" y="128" fill="#666">(staging,</text><text x="445" y="142" fill="#666">formato único)</text>
+    <text x="590" y="137">T4</text><text x="590" y="152" fill="#666">consolidar</text>
+  </g>
+  <g stroke="#3d5a75" stroke-width="1.4" fill="none" marker-end="url(#m)">
+    <path d="M160,40H213"/><path d="M160,95H213"/><path d="M160,150H213"/><path d="M160,260H213"/>
+    <path d="M335,40 L388,90"/><path d="M335,95H388"/><path d="M335,150 L388,150"/>
+    <path d="M500,130H548"/><path d="M160,205 C 400,205 520,190 560,172"/><path d="M335,260 C 500,260 570,230 590,172"/>
+    <path d="M630,140 H 660"/>
+  </g>
+  <text x="250" y="200" font-size="10" fill="#666">lookup</text><text x="440" y="250" font-size="10" fill="#666">meteo_hora (BD)</text>
+  <g font-size="10.5" fill="#1d1d1f"><text x="665" y="95">PostgreSQL</text><text x="665" y="112">disponibilidade.json</text><text x="665" y="129">disponibilidade.xml</text>
+  <text x="665" y="146">relatórios CSV</text><text x="665" y="163">quadro hacampo</text><text x="665" y="180">log</text></g>
+</svg>
