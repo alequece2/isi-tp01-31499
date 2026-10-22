@@ -36,7 +36,7 @@ O caderno é escrito à mão e passado para Excel/CSV, por isso vem desarrumado:
 datas em 3 formatos, horas como 18h / 18:00 / 18.30, campos como C1 / Campo 1 / court 1, telefones com +351 e espaços.
 As expressões regulares põem tudo no mesmo formato, as linhas incompletas vão para um ficheiro de erros,
 e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = anonimização).</note>
-      <xloc>60</xloc><yloc>420</yloc><width>900</width><heigth>100</heigth>
+      <xloc>78</xloc><yloc>462</yloc><width>1170</width><heigth>100</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
@@ -101,7 +101,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>60</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>78</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Tirar espaços / maiúsculas</name>
@@ -115,7 +115,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Normalizar (regex)</name>
@@ -143,7 +143,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar data</name>
@@ -160,7 +160,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar hora</name>
@@ -177,7 +177,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar duração</name>
@@ -194,7 +194,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar telefone</name>
@@ -211,7 +211,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Reserva completa?</name>
@@ -226,7 +226,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1040</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1352</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Erros clube A (CSV)</name>
@@ -246,7 +246,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1180</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1534</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Converter data</name>
@@ -263,7 +263,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1040</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1352</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Calcular minutos</name>
@@ -295,7 +295,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Traduzir tipo</name>
@@ -309,7 +309,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Anonimizar contacto (SHA-256)</name>
@@ -323,7 +323,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Origem e clube</name>
@@ -337,7 +337,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Campos finais (sem nome nem telefone)</name>
@@ -351,7 +351,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar staging (BD)</name>
@@ -369,7 +369,7 @@ e o nome e o telefone são removidos (o telefone passa a um código SHA-256 = an
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step_error_handling>
   </step_error_handling>

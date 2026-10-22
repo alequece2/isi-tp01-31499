@@ -47,8 +47,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>60</xloc>
-      <yloc>200</yloc>
+      <xloc>78</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -167,8 +167,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>200</xloc>
-      <yloc>200</yloc>
+      <xloc>260</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -180,8 +180,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>340</xloc>
-      <yloc>200</yloc>
+      <xloc>442</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -194,8 +194,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>200</yloc>
+      <xloc>624</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -213,8 +213,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>620</xloc>
-      <yloc>200</yloc>
+      <xloc>806</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -226,8 +226,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>620</xloc>
-      <yloc>60</yloc>
+      <xloc>806</xloc>
+      <yloc>66</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -245,8 +245,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>760</xloc>
-      <yloc>200</yloc>
+      <xloc>988</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -264,8 +264,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>900</xloc>
-      <yloc>200</yloc>
+      <xloc>1170</xloc>
+      <yloc>220</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -283,8 +283,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>900</xloc>
-      <yloc>400</yloc>
+      <xloc>1170</xloc>
+      <yloc>440</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -302,8 +302,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>760</xloc>
-      <yloc>400</yloc>
+      <xloc>988</xloc>
+      <yloc>440</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -315,8 +315,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>620</xloc>
-      <yloc>400</yloc>
+      <xloc>806</xloc>
+      <yloc>440</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -328,8 +328,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>400</yloc>
+      <xloc>624</xloc>
+      <yloc>440</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -341,8 +341,8 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1080</xloc>
-      <yloc>300</yloc>
+      <xloc>1404</xloc>
+      <yloc>330</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -354,15 +354,15 @@ TRUNCATE TABLE hacampo.stg_reservas;
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1220</xloc>
-      <yloc>300</yloc>
+      <xloc>1404</xloc>
+      <yloc>484</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
   <hops><hop><from>START</from><to>Preparar base de dados (SQL)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop><hop><from>Preparar base de dados (SQL)</from><to>Existem os ficheiros de entrada?</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Existem os ficheiros de entrada?</from><to>Validar XML contra XSD</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Validar XML contra XSD</from><to>T0 - Previsão do tempo (API)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T0 - Previsão do tempo (API)</from><to>T1 - Clube A (CSV)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T1 - Clube A (CSV)</from><to>T2 - Clube B (JSON)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T2 - Clube B (JSON)</from><to>T3 - Clube C (XML)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T3 - Clube C (XML)</from><to>T4 - Consolidar e publicar</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T4 - Consolidar e publicar</from><to>Registar fim no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Registar fim no log</from><to>Sucesso</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>T0 - Previsão do tempo (API)</from><to>Aviso: sem previsão do tempo</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Aviso: sem previsão do tempo</from><to>T1 - Clube A (CSV)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop><hop><from>Preparar base de dados (SQL)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Existem os ficheiros de entrada?</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Validar XML contra XSD</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T1 - Clube A (CSV)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T2 - Clube B (JSON)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T3 - Clube C (XML)</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>T4 - Consolidar e publicar</from><to>Registar erro no log</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>N</evaluation><unconditional>N</unconditional></hop><hop><from>Registar erro no log</from><to>Abortar</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop></hops>
   <notepads><notepad><note>JOB PRINCIPAL - hacampo (&quot;Há campo?&quot;)
 Seta verde = continua se correu bem; vermelha = se falhou; cinzenta = continua sempre.
-Se a API do tempo falhar (sem internet) o job avisa e continua. Qualquer outra falha regista o erro e aborta.</note><xloc>40</xloc><yloc>500</yloc><width>640</width><heigth>70</heigth>
+Se a API do tempo falhar (sem internet) o job avisa e continua. Qualquer outra falha regista o erro e aborta.</note><xloc>52</xloc><yloc>550</yloc><width>832</width><heigth>70</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>

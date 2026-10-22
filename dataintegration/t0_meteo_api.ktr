@@ -36,7 +36,7 @@
 2. Faz um pedido HTTP GET por clube.
 3. A resposta vem em JSON: tira-se a lista de horas, a probabilidade de chuva e se é dia.
 4. Grava tudo na tabela meteo_hora (apaga a anterior).</note>
-      <xloc>40</xloc><yloc>20</yloc><width>720</width><heigth>90</heigth>
+      <xloc>52</xloc><yloc>22</yloc><width>936</width><heigth>90</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
@@ -92,7 +92,7 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>60</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>78</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Chamar API Open-Meteo</name>
@@ -108,7 +108,7 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>220</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>286</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ler JSON da resposta</name>
@@ -125,7 +125,7 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>380</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>494</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Escolher colunas</name>
@@ -139,7 +139,7 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>540</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>702</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar meteo_hora (BD)</name>
@@ -157,7 +157,7 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>700</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>910</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step_error_handling>
   </step_error_handling>

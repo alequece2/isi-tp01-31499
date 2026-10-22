@@ -36,7 +36,7 @@ A app exporta as reservas em JSON (com dados do sócio dentro de &quot;member&qu
 Tiram-se as canceladas, as repetidas (a app às vezes envia a mesma reserva 2 vezes = mesmo id),
 o número do campo é extraído com regex (&quot;Court 2&quot; -&gt; 2) e as datas ISO passam a data + minutos.
 Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note>
-      <xloc>60</xloc><yloc>470</yloc><width>820</width><heigth>100</heigth>
+      <xloc>78</xloc><yloc>517</yloc><width>1066</width><heigth>100</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
@@ -100,7 +100,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>60</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>78</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Só confirmadas</name>
@@ -115,7 +115,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ignorar canceladas</name>
@@ -129,7 +129,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>220</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>242</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ordenar por id</name>
@@ -143,7 +143,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Remover repetidas (id)</name>
@@ -157,7 +157,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Repetidas clube B (CSV)</name>
@@ -177,7 +177,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>220</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>242</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Normalizar (regex)</name>
@@ -197,7 +197,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar telefone</name>
@@ -214,7 +214,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Converter datas</name>
@@ -234,7 +234,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Calcular data e minutos</name>
@@ -268,7 +268,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1040</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1352</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Traduzir tipo</name>
@@ -282,7 +282,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1040</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1352</xloc><yloc>396</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Anonimizar contacto (SHA-256)</name>
@@ -296,7 +296,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>396</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Origem e clube</name>
@@ -310,7 +310,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>396</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Campos finais (sem dados pessoais)</name>
@@ -324,7 +324,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>396</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar staging (BD)</name>
@@ -342,7 +342,7 @@ Nome, email e telefone não seguem: o telefone passa a um código SHA-256.</note
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>360</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>396</yloc><draw>Y</draw></GUI>
   </step>
   <step_error_handling>
     <error>

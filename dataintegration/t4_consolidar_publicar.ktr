@@ -38,7 +38,7 @@
 4. Alertas: chuva prevista num campo descoberto; jogo à noite num campo sem luz.
 5. Conflitos: 2 reservas no mesmo campo à mesma hora.
 6. Saídas: tabelas na BD, quadro público (JSON e XML, sem dados pessoais) e relatórios CSV.</note>
-      <xloc>60</xloc><yloc>920</yloc><width>760</width><heigth>130</heigth>
+      <xloc>78</xloc><yloc>1012</yloc><width>988</width><heigth>130</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
@@ -116,7 +116,7 @@ FROM hacampo.stg_reservas</sql><limit>0</limit><lookup/><execute_each_row>N</exe
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>60</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>78</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ordenar reservas</name>
@@ -130,7 +130,7 @@ FROM hacampo.stg_reservas</sql><limit>0</limit><lookup/><execute_each_row>N</exe
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Remover duplicados</name>
@@ -144,7 +144,7 @@ FROM hacampo.stg_reservas</sql><limit>0</limit><lookup/><execute_each_row>N</exe
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Duplicados (CSV)</name>
@@ -164,7 +164,7 @@ FROM hacampo.stg_reservas</sql><limit>0</limit><lookup/><execute_each_row>N</exe
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>374</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ler campos e horários (BD)</name>
@@ -181,7 +181,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>60</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>66</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Procurar campo (lookup)</name>
@@ -195,7 +195,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Campo existe e está aberto?</name>
@@ -210,7 +210,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Rejeitadas (CSV)</name>
@@ -230,7 +230,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>374</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Nº de blocos de 30 min</name>
@@ -254,7 +254,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Partir em blocos (clone)</name>
@@ -269,7 +269,7 @@ JOIN hacampo.clubes k ON k.codigo = c.clube</sql><limit>0</limit><lookup/><execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>200</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>220</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Hora do bloco</name>
@@ -290,7 +290,7 @@ var chave_meteo = date2str(data, &quot;yyyy-MM-dd&quot;) + &quot;T&quot; + dois(
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ler previsão (BD)</name>
@@ -305,7 +305,7 @@ FROM hacampo.meteo_hora</sql><limit>0</limit><lookup/><execute_each_row>N</execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>340</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>374</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Juntar previsão do tempo</name>
@@ -319,7 +319,7 @@ FROM hacampo.meteo_hora</sql><limit>0</limit><lookup/><execute_each_row>N</execu
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Calcular alertas</name>
@@ -341,7 +341,7 @@ var sem_luz = (precisa_luz &amp;&amp; !tem_luz);</jsScript_script></jsScript></j
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ordenar blocos</name>
@@ -355,7 +355,7 @@ var sem_luz = (precisa_luz &amp;&amp; !tem_luz);</jsScript_script></jsScript></j
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Contar reservas por bloco</name>
@@ -369,7 +369,7 @@ var sem_luz = (precisa_luz &amp;&amp; !tem_luz);</jsScript_script></jsScript></j
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Marcar conflitos</name>
@@ -384,7 +384,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>480</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>528</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar ocupacao_slot (BD)</name>
@@ -402,7 +402,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>40</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>52</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Data em texto</name>
@@ -419,7 +419,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Quadro público (JSON)</name>
@@ -436,7 +436,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>130</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>169</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Quadro público (XML)</name>
@@ -453,7 +453,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>270</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>351</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>É conflito?</name>
@@ -468,7 +468,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>400</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>520</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Conflitos (CSV)</name>
@@ -488,7 +488,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>400</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>520</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Sem conflito</name>
@@ -502,7 +502,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>530</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>689</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Tem alerta?</name>
@@ -517,7 +517,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Alertas (CSV)</name>
@@ -537,7 +537,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>660</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>858</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Sem alerta</name>
@@ -551,7 +551,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>790</xloc><yloc>800</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1027</xloc><yloc>880</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ocupação por campo e dia</name>
@@ -565,7 +565,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>820</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1066</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Taxa de ocupação</name>
@@ -591,7 +591,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>960</xloc><yloc>640</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1248</xloc><yloc>704</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar ocupacao_diaria (BD)</name>
@@ -609,7 +609,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1100</xloc><yloc>580</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1430</xloc><yloc>638</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Ocupação diária (CSV)</name>
@@ -629,7 +629,7 @@ var conflito = (nr_reservas &gt; 1);</jsScript_script></jsScript></jsScripts><fi
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>1100</xloc><yloc>720</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1430</xloc><yloc>792</yloc><draw>Y</draw></GUI>
   </step>
   <step_error_handling>
     <error>

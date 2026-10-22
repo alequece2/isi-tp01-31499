@@ -35,7 +35,7 @@
 O XML já foi validado contra o XSD no job (se estiver mal formado o processo pára antes daqui).
 O XPath /agenda/dia/marcacao dá uma linha por marcação; a data vem do elemento pai (../@data).
 As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; passa a &quot;1&quot; (regex) e o requerente é anonimizado.</note>
-      <xloc>60</xloc><yloc>420</yloc><width>820</width><heigth>90</heigth>
+      <xloc>78</xloc><yloc>462</yloc><width>1066</width><heigth>90</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
       <backgroundcolorred>220</backgroundcolorred><backgroundcolorgreen>236</backgroundcolorgreen><backgroundcolorblue>255</backgroundcolorblue>
@@ -98,7 +98,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>60</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>78</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Separar hora de início</name>
@@ -112,7 +112,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>200</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>260</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Separar hora de fim</name>
@@ -126,7 +126,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Calcular minutos</name>
@@ -150,7 +150,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Normalizar (regex)</name>
@@ -168,7 +168,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Validar contacto</name>
@@ -185,7 +185,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Traduzir tipo</name>
@@ -199,7 +199,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>100</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>110</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Converter data</name>
@@ -216,7 +216,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>900</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>1170</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Anonimizar contacto (SHA-256)</name>
@@ -230,7 +230,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>760</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>988</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Origem e clube</name>
@@ -244,7 +244,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>620</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>806</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Campos finais (sem dados pessoais)</name>
@@ -258,7 +258,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>480</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>624</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step>
     <name>Gravar staging (BD)</name>
@@ -276,7 +276,7 @@ As horas &quot;18:30&quot; são separadas em horas e minutos, o &quot;T1&quot; p
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
-    <GUI><xloc>340</xloc><yloc>300</yloc><draw>Y</draw></GUI>
+    <GUI><xloc>442</xloc><yloc>330</yloc><draw>Y</draw></GUI>
   </step>
   <step_error_handling>
   </step_error_handling>
