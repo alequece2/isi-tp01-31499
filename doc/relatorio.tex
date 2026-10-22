@@ -30,6 +30,7 @@
 
 % Código QR para o vídeo
 \usepackage{qrcode}
+\usepackage{pdflscape}
 
 % Cabeçalhos e rodapés
 \usepackage{fancyhdr}
@@ -111,7 +112,7 @@
 \newcommand{\dataEntrega}{22 de outubro de 2026}
 
 % Ligação do vídeo de demonstração (deixar vazio enquanto não existir)
-\newcommand{\videoURL}{}
+\newcommand{\videoURL}{https://youtu.be/oZaNDDuzQy0}
 
 % ==============================================================================
 % DOCUMENTO
@@ -271,7 +272,7 @@ A Tabela~\ref{tab:operadores} relaciona os critérios de mais-valia do enunciado
 Expressões regulares & \textit{Replace in string} (normalizar datas, horas, campos e telefones) e \textit{Regex evaluation} (validar e extrair grupos) em T1, T2 e T3 \\
 Nulos e validação & \textit{Filter rows} com \texttt{IS NOT NULL} e com os resultados das expressões regulares; linhas inválidas enviadas para ficheiros de erro \\
 Duplicados & \textit{Sort rows} + \textit{Unique rows} com redirecionamento dos repetidos (T2 e T4) \\
-Anonimização & \textit{Add a checksum} SHA-256 do telefone; \textit{Select values} remove nome, email e telefone \\
+Pseudonimização & \textit{Add a checksum} SHA-256 do telefone; \textit{Select values} remove nome, email e telefone \\
 Conversão de formatos & CSV, JSON e XML $\rightarrow$ tabela; tabela $\rightarrow$ JSON e XML; datas em texto $\leftrightarrow$ tipo data \\
 Junções e \textit{lookups} & \textit{Stream lookup} aos campos e horários e à previsão do tempo \\
 Agregações e cálculos & \textit{Calculator} (minutos, duração, n.º de blocos, taxa) e \textit{Group by} (reservas por bloco, ocupação por dia) \\
@@ -316,7 +317,7 @@ As horas são guardadas em \textbf{minutos desde a meia-noite} (18:30 $\rightarr
 \label{fig:t0}
 \end{figure}
 
-A transformação lê os três clubes da base de dados e monta, em SQL, o URL da API com a latitude e a longitude de cada um e com os parâmetros \verb!${DATA_INICIO}! e \verb!${DATA_FIM}! (substituição de variáveis ativa). O \textit{HTTP client} faz um pedido GET por clube. A resposta é um JSON com listas paralelas (\texttt{hourly.time}, \texttt{hourly.precipitation\_probability} e \texttt{hourly.is\_day}), que o \textit{JSON input} lê a partir do campo da resposta e transforma em linhas: três pedidos dão 504 linhas (3 clubes $\times$ 7 dias $\times$ 24 horas). O resultado substitui o conteúdo da tabela \texttt{meteo\_hora}.
+A transformação lê os três clubes da base de dados e monta, em SQL, o URL da API com a latitude e a longitude de cada um e com os parâmetros \verb!${DATA_INICIO}! e \verb!${DATA_FIM}! (substituição de variáveis ativa). O \textit{HTTP client} faz um pedido GET por clube. A resposta é um JSON com listas paralelas (\texttt{hourly.time}, \texttt{hourly.precipitation\_probability} e \texttt{hourly.is\_day}), que o \textit{JSON input} lê a partir do campo da resposta e transforma em linhas: três pedidos dão 504 linhas (3 clubes $\times$ 7 dias $\times$ 24 horas). O resultado é inserido ou atualizado na tabela \texttt{meteo\_hora} (\textit{Insert/Update}); assim, se a API falhar, a última previsão guardada continua disponível.
 
 \subsection{T1 -- Clube A: caderno do bar (CSV)}
 
@@ -383,18 +384,13 @@ O \textit{JSON input} usa caminhos JSONPath como \verb!$.reservas[*].member.phon
 \label{fig:t3}
 \end{figure}
 
-Antes desta transformação, o \textit{job} valida o XML contra \texttt{clube\_c\_agenda.xsd}~\cite{xsd}. O XSD obriga, por exemplo, a horas no formato \texttt{HH:MM}, a campos \texttt{T1}, \texttt{T2}, \ldots{} e a um tipo de marcação dentro de uma lista fechada; se o XML não cumprir estas regras, o processo pára antes de ler dados errados. O \textit{Get data from XML} percorre \texttt{/agenda/dia/marcacao} (uma linha por marcação) e obtém a data a partir do elemento pai com o XPath \texttt{../@data}. As horas \texttt{18:30} são separadas com \textit{Split fields}, o código \texttt{T1} passa a \texttt{1} com a expressão regular \verb!^T! e o requerente é anonimizado.
+Antes desta transformação, o \textit{job} valida o XML contra \texttt{clube\_c\_agenda.xsd}~\cite{xsd}. O XSD obriga, por exemplo, a horas no formato \texttt{HH:MM}, a campos \texttt{T1}, \texttt{T2}, \ldots{} e a um tipo de marcação dentro de uma lista fechada; se o XML não cumprir estas regras, o processo pára antes de ler dados errados. O \textit{Get data from XML} percorre \texttt{/agenda/dia/marcacao} (uma linha por marcação) e obtém a data a partir do elemento pai com o XPath \texttt{../@data}. As horas \texttt{18:30} são separadas com \textit{Split fields}, o código \texttt{T1} passa a \texttt{1} com a expressão regular \verb!^T! e o nome do requerente é descartado e o contacto pseudonimizado.
 
 \textbf{Resultado:} 32 marcações gravadas.
 
 \subsection{T4 -- Consolidar e publicar}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.92\textwidth]{figuras/t4_consolidar_publicar.pdf}
-\caption{Transformação \texttt{t4\_consolidar\_publicar.ktr}.}
-\label{fig:t4}
-\end{figure}
+
 
 A transformação T4 junta as reservas dos três clubes e aplica as regras de negócio:
 \begin{enumerate}[itemsep=2pt]
@@ -405,6 +401,16 @@ A transformação T4 junta as reservas dos três clubes e aplica as regras de ne
     \item \textbf{Conflitos:} o \textit{Group by} conta as reservas por campo, dia e bloco; mais de uma reserva no mesmo bloco é um conflito, que segue para \texttt{conflitos.csv}.
     \item \textbf{Saídas:} as linhas são copiadas em paralelo para a tabela \texttt{ocupacao\_slot}, para o quadro em JSON e em XML, para os ficheiros de alertas e de conflitos e, com um segundo \textit{Group by} e um \textit{Calculator}, para a taxa de ocupação por campo e por dia (base de dados e CSV).
 \end{enumerate}
+
+\begin{landscape}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{figuras/t4_consolidar_publicar.pdf}
+\caption{Transformação \texttt{t4\_consolidar\_publicar.ktr}.}
+\label{fig:t4}
+\end{figure}
+\end{landscape}
+
 
 \begin{lstlisting}[language=Java, caption={Passo \textit{Hora do bloco} (Modified JavaScript value).}, label={lst:hora}]
 // cada cópia da reserva corresponde a um bloco de 30 minutos
@@ -433,7 +439,7 @@ A Tabela~\ref{tab:resultados} resume uma execução completa do processo.
 
 \begin{table}[H]
 \centering
-\caption{Resultados da execução de 20 de outubro de 2026.}
+\caption{Resultados da execução de 22 de outubro de 2026.}
 \label{tab:resultados}
 \small
 \renewcommand{\arraystretch}{1.2}
@@ -446,24 +452,35 @@ Duplicados removidos / rejeitadas (campo inexistente, fora de horas) & 2 / 2 \\
 Reservas válidas $\rightarrow$ blocos de 30 minutos & 116 $\rightarrow$ 316 \\
 Blocos ocupados distintos / em conflito & 311 / 5 \\
 Blocos com alerta (noite num campo sem luz) & 14 \\
-Blocos com chuva $\geq$ 50\% num campo descoberto & 0 (semana seca; com \texttt{LIMITE\_CHUVA = 5} há 99) \\
-Linhas de ocupação diária (campo $\times$ dia) & 60 \\
+Blocos com chuva $\geq$ 50\% num campo descoberto & 0 (depende da previsão do dia em que se corre o \textit{job}) \\
+Linhas de ocupação diária (campos e dias com reservas) & 60 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+A Listagem~\ref{lst:contagens} mostra o número de linhas carregadas em cada tabela do PostgreSQL depois da execução.
+
+\begin{lstlisting}[language={}, caption={Linhas por tabela no esquema \texttt{hacampo} após a execução do \textit{job}.}, label={lst:contagens}]
+SELECT 'clubes' AS tabela, count(*) AS linhas FROM hacampo.clubes
+UNION ALL SELECT 'campos', count(*) FROM hacampo.campos
+UNION ALL ...;
+
+     tabela      | linhas
+-----------------+--------
+ clubes          |      3
+ campos          |     10
+ stg_reservas    |    120
+ meteo_hora      |    504
+ ocupacao_slot   |    311
+ ocupacao_diaria |     60
+\end{lstlisting}
+
 % ------------------------------------------------------------------------------
 % 5. JOBS
 % ------------------------------------------------------------------------------
-\newpage
 \section{Jobs}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figuras/j_hacampo.pdf}
-\caption{\textit{Job} principal \texttt{j\_hacampo.kjb}.}
-\label{fig:job}
-\end{figure}
+
 
 O \textit{job} \texttt{j\_hacampo.kjb} (Figura~\ref{fig:job}) define a ordem de execução e o que acontece quando algum passo falha:
 \begin{enumerate}[itemsep=2pt]
@@ -474,6 +491,16 @@ O \textit{job} \texttt{j\_hacampo.kjb} (Figura~\ref{fig:job}) define a ordem de 
     \item \textbf{T1, T2 e T3} carregam a \textit{staging}; \textbf{T4} consolida e publica.
     \item \textbf{Fim:} regista no \textit{log} onde estão os resultados e termina com \textit{Success}. Qualquer falha nos passos 1 a 3 ou em T1 a T4 segue o \textit{hop} vermelho: o erro é registado no \textit{log} e o \textit{job} é abortado.
 \end{enumerate}
+
+\begin{landscape}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/j_hacampo.pdf}
+\caption{\textit{Job} principal \texttt{j\_hacampo.kjb}.}
+\label{fig:job}
+\end{figure}
+\end{landscape}
+
 
 O \textit{job} tem três parâmetros, passados às transformações: \texttt{DATA\_INICIO} e \texttt{DATA\_FIM} (semana pedida à API) e \texttt{LIMITE\_CHUVA}. Todos os caminhos são relativos à pasta dos ficheiros (variável \path{${Internal.Entry.Current.Directory}}), pelo que a pasta pode ser copiada para outro computador. A Listagem~\ref{lst:kitchen} mostra a execução pela linha de comandos.
 
@@ -495,7 +522,7 @@ A Figura~\ref{fig:quadro} mostra o resultado final: o quadro \textit{``Há campo
 % ------------------------------------------------------------------------------
 \section{Vídeo com demonstração}
 
-O vídeo (cerca de 2 min 40 s, sem áudio) mostra, por esta ordem:
+O vídeo (cerca de 1 min 40 s, sem áudio) mostra, por esta ordem:
 \begin{enumerate}[itemsep=1pt]
     \item a execução do \textit{job} \texttt{j\_hacampo} no Spoon, com cada entrada a terminar com sucesso e o registo da execução;
     \item na T1, a pré-visualização dos dados do caderno do Clube A (datas, horas, campos e telefones escritos de formas diferentes), as expressões regulares de normalização e o passo de anonimização SHA-256;
@@ -524,15 +551,16 @@ O vídeo (cerca de 2 min 40 s, sem áudio) mostra, por esta ordem:
 % ------------------------------------------------------------------------------
 \section{Conclusão e trabalhos futuros}
 
-O trabalho apresenta um processo ETL completo sobre um problema real: juntar num único quadro as marcações de clubes que utilizam sistemas diferentes. O processo lê cinco origens (CSV, JSON, XML, PostgreSQL e uma API REST); limpa e normaliza os dados com expressões regulares; remove repetidos; anonimiza os dados pessoais; e aplica regras de negócio (horários, campos existentes, conflitos, luz e chuva). Os resultados ficam na base de dados e em ficheiros JSON, XML e CSV. A separação entre transformações de entrada, \textit{staging} e consolidação facilita a integração de novos clubes.
+O trabalho apresenta um processo ETL completo sobre um problema real: juntar num único quadro as marcações de clubes que utilizam sistemas diferentes. O processo lê cinco origens (CSV, JSON, XML, PostgreSQL e uma API REST); limpa e normaliza os dados com expressões regulares; remove repetidos; retira e pseudonimiza os dados pessoais; e aplica regras de negócio (horários, campos existentes, conflitos, luz e chuva). Os resultados ficam na base de dados e em ficheiros JSON, XML e CSV. A separação entre transformações de entrada, \textit{staging} e consolidação facilita a integração de novos clubes.
 
-As principais dificuldades foram as datas e horas escritas de muitas formas diferentes, a decisão sobre o que é um erro (enviado para ficheiro) e o que é apenas um aviso (a linha continua), e a anonimização sem perder a capacidade de detetar duplicados, resolvida com o código SHA-256 do contacto.
+As principais dificuldades foram as datas e horas escritas de muitas formas diferentes, a decisão sobre o que é um erro (enviado para ficheiro) e o que é apenas um aviso (a linha continua), e a proteção dos dados pessoais sem perder a capacidade de detetar duplicados, resolvida com o código SHA-256 do contacto. Como limitação, o SHA-256 é aplicado sem sal: um telefone tem poucos dígitos e o código pode ser revertido por força bruta, pelo que se trata de pseudonimização e não de anonimização completa.
 
 Como trabalhos futuros, propõe-se:
 \begin{itemize}[itemsep=1pt]
     \item executar o \textit{job} de hora a hora (agendador do sistema ou Carte) e publicar o JSON automaticamente no site hacampo (FTP/SFTP);
     \item enviar por email ao clube os conflitos e alertas do dia (entrada \textit{Mail} do \textit{job});
     \item receber as marcações em tempo real por MQTT/Node-RED, em vez de ficheiros;
+    \item usar um HMAC com chave secreta em vez do SHA-256 simples;
     \item ligar o processo a clubes reais, com a respetiva autorização.
 \end{itemize}
 

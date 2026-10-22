@@ -5,7 +5,7 @@
 **Autor:** Alexandre Magalhães Martins Machado – n.º 31499 (trabalho individual)
 **Docente:** Óscar Ribeiro
 
-**Vídeo de demonstração:** _(link a colocar aqui)_
+**Vídeo de demonstração (sem áudio, 1 min 40 s):** https://youtu.be/oZaNDDuzQy0
 **Repositório Git:** https://github.com/alequece2/isi-tp01-31499
 
 ---
@@ -23,7 +23,7 @@ Três clubes de ténis (fictícios) registam as marcações dos campos de formas
 O processo ETL, feito em **Pentaho Data Integration (Kettle) 10.2** com **PostgreSQL 17**:
 
 1. **Extrai** as reservas dos 3 ficheiros, os dados dos clubes e campos da base de dados, e a previsão do tempo hora a hora da **API REST Open-Meteo**.
-2. **Transforma**: normaliza com expressões regulares (datas, horas, campos, telefones), valida, remove duplicados e repetidos, anonimiza (SHA-256), faz lookups aos campos e horários, parte as reservas em blocos de 30 min, cruza com a meteorologia, deteta conflitos e calcula a taxa de ocupação.
+2. **Transforma**: normaliza com expressões regulares (datas, horas, campos, telefones), valida, remove duplicados e repetidos, retira os dados pessoais e pseudonimiza o contacto (SHA-256), faz lookups aos campos e horários, parte as reservas em blocos de 30 min, cruza com a meteorologia, deteta conflitos e calcula a taxa de ocupação.
 3. **Carrega**: tabelas no PostgreSQL, quadro público em JSON e XML (sem dados pessoais), relatórios CSV (erros, duplicados, rejeitadas, conflitos, alertas, ocupação) e log.
 
 O resultado é o quadro "livre/ocupado" do projeto **hacampo**: `src/quadro/index.html` lê o `disponibilidade.json` gerado pelo Kettle.
@@ -99,4 +99,4 @@ Tabelas no PostgreSQL (esquema `hacampo`): `clubes`, `campos`, `stg_reservas`, `
 ## Notas
 
 - Os dados dos clubes são inventados (com erros de propósito, para haver o que limpar). A previsão do tempo é real.
-- Uso de IA: declarado no relatório (secção "Declaração de utilização de IA").
+- Uso de IA: declarado no relatório (Anexo A, "Declaração de utilização de inteligência artificial").

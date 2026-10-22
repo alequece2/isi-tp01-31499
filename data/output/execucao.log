@@ -1,133 +1,132 @@
-2026-10-20 15:57:48.395 - Kitchen - Logging is at level : Basic
-2026-10-20 15:57:48.422 - Kitchen - Start of run.
-2026-10-20 15:57:52.886 - j_hacampo - Start of job execution
-2026-10-20 15:57:53.087 - j_hacampo - Starting entry [Preparar base de dados (SQL)]
-2026-10-20 15:57:53.640 - j_hacampo - Starting entry [Existem os ficheiros de entrada?]
-2026-10-20 15:57:53.662 - j_hacampo - Starting entry [Validar XML contra XSD]
-2026-10-20 15:57:53.911 - j_hacampo - Starting entry [T0 - Previsão do tempo (API)]
-2026-10-20 15:57:54.042 - T0 - Previsão do tempo (API) - Using run configuration [Pentaho local]
-2026-10-20 15:57:54.091 - Carte - Installing timer to purge stale objects after 1440 minutes.
-2026-10-20 15:57:54.102 - t0_meteo_api - Expedindo in?cio para transforma??o [t0_meteo_api]
-2026-10-20 15:57:54.156 - Gravar meteo_hora (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:54.324 - Ler clubes (BD).0 - Finished reading query, closing connection
-2026-10-20 15:57:54.333 - Ler clubes (BD).0 - Finished processing (I=3, O=0, R=0, W=3, U=0, E=0)
-2026-10-20 15:57:55.346 - Chamar API Open-Meteo.0 - Finished processing (I=0, O=0, R=3, W=3, U=0, E=0)
-2026-10-20 15:57:55.378 - Ler JSON da resposta.0 - Finished processing (I=504, O=0, R=3, W=504, U=0, E=0)
-2026-10-20 15:57:55.423 - Escolher colunas.0 - Finished processing (I=0, O=0, R=504, W=504, U=0, E=0)
-2026-10-20 15:57:55.489 - Gravar meteo_hora (BD).0 - Finished processing (I=0, O=504, R=504, W=504, U=0, E=0)
-2026-10-20 15:57:55.503 - j_hacampo - Starting entry [T1 - Clube A (CSV)]
-2026-10-20 15:57:55.669 - T1 - Clube A (CSV) - Using run configuration [Pentaho local]
-2026-10-20 15:57:55.670 - t1_clube_a_csv - Expedindo in?cio para transforma??o [t1_clube_a_csv]
-2026-10-20 15:57:55.758 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:55.828 - Ler caderno (CSV).0 - Header row skipped in file 'file:///C:/Users/alexm/Desktop/LESI/3º%20Ano/1º%20Semestre/ISI/Trabalho%20Prático/tp01-31499/dataintegration/../data/input/clube_a_caderno.csv'
-2026-10-20 15:57:55.837 - Ler caderno (CSV).0 - Finished processing (I=49, O=0, R=0, W=48, U=0, E=0)
-2026-10-20 15:57:55.879 - Tirar espaços / maiúsculas.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:55.911 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:55.943 - Validar data.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:55.990 - Validar hora.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:56.021 - Validar duração.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:56.069 - Validar telefone.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:56.100 - Reserva completa?.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
-2026-10-20 15:57:56.131 - Converter data.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.132 - Erros clube A (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
-2026-10-20 15:57:56.163 - Calcular minutos.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.210 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.257 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.288 - Origem e clube.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.335 - Campos finais (sem nome nem telefone).0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.372 - Gravar staging (BD).0 - Finished processing (I=0, O=46, R=46, W=46, U=0, E=0)
-2026-10-20 15:57:56.383 - j_hacampo - Starting entry [T2 - Clube B (JSON)]
-2026-10-20 15:57:56.424 - T2 - Clube B (JSON) - Using run configuration [Pentaho local]
-2026-10-20 15:57:56.425 - t2_clube_b_json - Expedindo in?cio para transforma??o [t2_clube_b_json]
-2026-10-20 15:57:56.441 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:56.466 - Ler app (JSON).0 - Finished processing (I=51, O=0, R=0, W=51, U=0, E=0)
-2026-10-20 15:57:56.507 - Só confirmadas.0 - Finished processing (I=0, O=0, R=51, W=51, U=0, E=0)
-2026-10-20 15:57:56.538 - Ignorar canceladas.0 - Finished processing (I=0, O=0, R=7, W=7, U=0, E=0)
-2026-10-20 15:57:56.553 - Ordenar por id.0 - Finished processing (I=0, O=0, R=44, W=44, U=0, E=0)
-2026-10-20 15:57:56.585 - Remover repetidas (id).0 - Finished processing (I=0, O=0, R=44, W=42, U=0, E=2)
-2026-10-20 15:57:56.615 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.616 - Repetidas clube B (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
-2026-10-20 15:57:56.646 - Validar telefone.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.677 - Converter datas.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.708 - Calcular data e minutos.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.740 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.770 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.802 - Origem e clube.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.832 - Campos finais (sem dados pessoais).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.869 - Gravar staging (BD).0 - Finished processing (I=0, O=42, R=42, W=42, U=0, E=0)
-2026-10-20 15:57:56.881 - j_hacampo - Starting entry [T3 - Clube C (XML)]
-2026-10-20 15:57:56.928 - T3 - Clube C (XML) - Using run configuration [Pentaho local]
-2026-10-20 15:57:56.930 - t3_clube_c_xml - Expedindo in?cio para transforma??o [t3_clube_c_xml]
-2026-10-20 15:57:56.946 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:57.143 - Ler agenda (XML / XPath).0 - Finished processing (I=32, O=0, R=0, W=32, U=0, E=0)
-2026-10-20 15:57:57.175 - Separar hora de início.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.206 - Separar hora de fim.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.237 - Calcular minutos.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.267 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.299 - Validar contacto.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.346 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.377 - Converter data.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.424 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.470 - Origem e clube.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.501 - Campos finais (sem dados pessoais).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.547 - Gravar staging (BD).0 - Finished processing (I=0, O=32, R=32, W=32, U=0, E=0)
-2026-10-20 15:57:57.549 - j_hacampo - Starting entry [T4 - Consolidar e publicar]
-2026-10-20 15:57:57.622 - T4 - Consolidar e publicar - Using run configuration [Pentaho local]
-2026-10-20 15:57:57.623 - t4_consolidar_publicar - Expedindo in?cio para transforma??o [t4_consolidar_publicar]
-2026-10-20 15:57:57.679 - Gravar ocupacao_slot (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:57.683 - Gravar ocupacao_diaria (BD).0 - Connected to database [hacampo_pg] (commit=1000)
-2026-10-20 15:57:57.685 - Quadro público (XML).0 - Opening output stream in encoding: UTF-8
-2026-10-20 15:57:57.818 - Ler staging (BD).0 - Finished reading query, closing connection
-2026-10-20 15:57:57.819 - Ler staging (BD).0 - Finished processing (I=120, O=0, R=0, W=120, U=0, E=0)
-2026-10-20 15:57:57.835 - Ler previsão (BD).0 - Finished reading query, closing connection
-2026-10-20 15:57:57.837 - Ler previsão (BD).0 - Finished processing (I=504, O=0, R=0, W=504, U=0, E=0)
-2026-10-20 15:57:57.860 - Ler campos e horários (BD).0 - Finished reading query, closing connection
-2026-10-20 15:57:57.861 - Ler campos e horários (BD).0 - Finished processing (I=10, O=0, R=0, W=10, U=0, E=0)
-2026-10-20 15:57:57.861 - Ordenar reservas.0 - Finished processing (I=0, O=0, R=120, W=120, U=0, E=0)
-2026-10-20 15:57:57.890 - Remover duplicados.0 - Finished processing (I=0, O=0, R=120, W=118, U=0, E=2)
-2026-10-20 15:57:57.922 - Duplicados (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
-2026-10-20 15:57:58.078 - Procurar campo (lookup).0 - Finished processing (I=0, O=0, R=128, W=118, U=0, E=0)
-2026-10-20 15:57:58.109 - Hora do bloco.0 - Optimization level set to 9.
-2026-10-20 15:57:58.109 - Campo existe e está aberto?.0 - Finished processing (I=0, O=0, R=118, W=118, U=0, E=0)
-2026-10-20 15:57:58.140 - Rejeitadas (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
-2026-10-20 15:57:58.140 - Nº de blocos de 30 min.0 - Finished processing (I=0, O=0, R=116, W=116, U=0, E=0)
-2026-10-20 15:57:58.186 - Partir em blocos (clone).0 - Finished processing (I=0, O=0, R=116, W=316, U=0, E=0)
-2026-10-20 15:57:58.320 - Calcular alertas.0 - Optimization level set to 9.
-2026-10-20 15:57:58.388 - Hora do bloco.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
-2026-10-20 15:57:58.436 - Juntar previsão do tempo.0 - Finished processing (I=0, O=0, R=820, W=316, U=0, E=0)
-2026-10-20 15:57:58.467 - Calcular alertas.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
-2026-10-20 15:57:58.515 - Ordenar blocos.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
-2026-10-20 15:57:58.516 - Marcar conflitos.0 - Optimization level set to 9.
-2026-10-20 15:57:58.546 - Contar reservas por bloco.0 - Finished processing (I=0, O=0, R=316, W=311, U=0, E=0)
-2026-10-20 15:57:58.577 - Marcar conflitos.0 - Finished processing (I=0, O=0, R=311, W=1555, U=0, E=0)
-2026-10-20 15:57:58.624 - Ocupação por campo e dia.0 - Finished processing (I=0, O=0, R=311, W=60, U=0, E=0)
-2026-10-20 15:57:58.625 - Tem alerta?.0 - Finished processing (I=0, O=0, R=311, W=311, U=0, E=0)
-2026-10-20 15:57:58.625 - É conflito?.0 - Finished processing (I=0, O=0, R=311, W=311, U=0, E=0)
-2026-10-20 15:57:58.625 - Data em texto.0 - Finished processing (I=0, O=0, R=311, W=622, U=0, E=0)
-2026-10-20 15:57:58.656 - Sem conflito.0 - Finished processing (I=0, O=0, R=306, W=306, U=0, E=0)
-2026-10-20 15:57:58.656 - Taxa de ocupação.0 - Finished processing (I=0, O=0, R=60, W=120, U=0, E=0)
-2026-10-20 15:57:58.661 - Gravar ocupacao_slot (BD).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
-2026-10-20 15:57:58.664 - Quadro público (XML).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
-2026-10-20 15:57:58.671 - Sem alerta.0 - Finished processing (I=0, O=0, R=297, W=297, U=0, E=0)
-2026-10-20 15:57:58.673 - Alertas (CSV).0 - Finished processing (I=0, O=15, R=14, W=14, U=0, E=0)
-2026-10-20 15:57:58.673 - Conflitos (CSV).0 - Finished processing (I=0, O=6, R=5, W=5, U=0, E=0)
-2026-10-20 15:57:58.676 - Quadro público (JSON).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
-2026-10-20 15:57:58.687 - Ocupação diária (CSV).0 - Finished processing (I=0, O=61, R=60, W=60, U=0, E=0)
-2026-10-20 15:57:58.712 - Gravar ocupacao_diaria (BD).0 - Finished processing (I=0, O=60, R=60, W=60, U=0, E=0)
-2026-10-20 15:57:58.721 - j_hacampo - Starting entry [Registar fim no log]
-2026-10-20 15:57:58.725 - hacampo - hacampo: processo concluído. Quadro em data/output/disponibilidade.json; conflitos, alertas e erros em data/output/*.csv.
-2026-10-20 15:57:58.727 - j_hacampo - Starting entry [Sucesso]
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [Sucesso] (result=[true])
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [Registar fim no log] (result=[true])
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [T4 - Consolidar e publicar] (result=[true])
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [T3 - Clube C (XML)] (result=[true])
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [T2 - Clube B (JSON)] (result=[true])
-2026-10-20 15:57:58.729 - j_hacampo - Finished job entry [T1 - Clube A (CSV)] (result=[true])
-2026-10-20 15:57:58.730 - j_hacampo - Finished job entry [T0 - Previsão do tempo (API)] (result=[true])
-2026-10-20 15:57:58.730 - j_hacampo - Finished job entry [Validar XML contra XSD] (result=[true])
-2026-10-20 15:57:58.730 - j_hacampo - Finished job entry [Existem os ficheiros de entrada?] (result=[true])
-2026-10-20 15:57:58.732 - j_hacampo - Finished job entry [Preparar base de dados (SQL)] (result=[true])
-2026-10-20 15:57:58.732 - j_hacampo - Job execution finished
-2026-10-20 15:57:58.749 - Kitchen - Finished!
-2026-10-20 15:57:58.751 - Kitchen - Start=2026/10/20 15:57:52.878, Stop=2026/10/20 15:57:58.750
-2026-10-20 15:57:58.751 - Kitchen - Processing ended after 5 seconds.
+2026-10-22 13:50:09.096 - Kitchen - Logging is at level : Basic
+2026-10-22 13:50:09.125 - Kitchen - Start of run.
+2026-10-22 13:50:12.893 - j_hacampo - Start of job execution
+2026-10-22 13:50:13.093 - j_hacampo - Starting entry [Preparar base de dados (SQL)]
+2026-10-22 13:50:13.597 - j_hacampo - Starting entry [Existem os ficheiros de entrada?]
+2026-10-22 13:50:13.617 - j_hacampo - Starting entry [Validar XML contra XSD]
+2026-10-22 13:50:13.839 - j_hacampo - Starting entry [T0 - Previsão do tempo (API)]
+2026-10-22 13:50:13.961 - T0 - Previsão do tempo (API) - Using run configuration [Pentaho local]
+2026-10-22 13:50:13.992 - Carte - Installing timer to purge stale objects after 1440 minutes.
+2026-10-22 13:50:13.995 - t0_meteo_api - Expedindo in?cio para transforma??o [t0_meteo_api]
+2026-10-22 13:50:14.326 - Ler clubes (BD).0 - Finished reading query, closing connection
+2026-10-22 13:50:14.339 - Ler clubes (BD).0 - Finished processing (I=3, O=0, R=0, W=3, U=0, E=0)
+2026-10-22 13:50:16.017 - Chamar API Open-Meteo.0 - Finished processing (I=0, O=0, R=3, W=3, U=0, E=0)
+2026-10-22 13:50:16.023 - Ler JSON da resposta.0 - Finished processing (I=504, O=0, R=3, W=504, U=0, E=0)
+2026-10-22 13:50:16.038 - Escolher colunas.0 - Finished processing (I=0, O=0, R=504, W=504, U=0, E=0)
+2026-10-22 13:50:16.069 - Gravar meteo_hora (BD).0 - Finished processing (I=504, O=0, R=504, W=504, U=0, E=0)
+2026-10-22 13:50:16.076 - j_hacampo - Starting entry [T1 - Clube A (CSV)]
+2026-10-22 13:50:16.177 - T1 - Clube A (CSV) - Using run configuration [Pentaho local]
+2026-10-22 13:50:16.178 - t1_clube_a_csv - Expedindo in?cio para transforma??o [t1_clube_a_csv]
+2026-10-22 13:50:16.221 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
+2026-10-22 13:50:16.273 - Ler caderno (CSV).0 - Header row skipped in file 'file:///C:/Users/alexm/Desktop/LESI/3º%20Ano/1º%20Semestre/ISI/Trabalho%20Prático/tp01-31499/dataintegration/../data/input/clube_a_caderno.csv'
+2026-10-22 13:50:16.279 - Ler caderno (CSV).0 - Finished processing (I=49, O=0, R=0, W=48, U=0, E=0)
+2026-10-22 13:50:16.284 - Tirar espaços / maiúsculas.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.298 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.304 - Validar data.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.307 - Validar hora.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.311 - Validar duração.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.315 - Validar telefone.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.321 - Reserva completa?.0 - Finished processing (I=0, O=0, R=48, W=48, U=0, E=0)
+2026-10-22 13:50:16.324 - Erros clube A (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
+2026-10-22 13:50:16.329 - Converter data.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.345 - Calcular minutos.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.361 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.369 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.374 - Origem e clube.0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.380 - Campos finais (sem nome nem telefone).0 - Finished processing (I=0, O=0, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.398 - Gravar staging (BD).0 - Finished processing (I=0, O=46, R=46, W=46, U=0, E=0)
+2026-10-22 13:50:16.403 - j_hacampo - Starting entry [T2 - Clube B (JSON)]
+2026-10-22 13:50:16.459 - T2 - Clube B (JSON) - Using run configuration [Pentaho local]
+2026-10-22 13:50:16.461 - t2_clube_b_json - Expedindo in?cio para transforma??o [t2_clube_b_json]
+2026-10-22 13:50:16.487 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
+2026-10-22 13:50:16.516 - Ler app (JSON).0 - Finished processing (I=51, O=0, R=0, W=51, U=0, E=0)
+2026-10-22 13:50:16.533 - Só confirmadas.0 - Finished processing (I=0, O=0, R=51, W=51, U=0, E=0)
+2026-10-22 13:50:16.538 - Ordenar por id.0 - Finished processing (I=0, O=0, R=44, W=44, U=0, E=0)
+2026-10-22 13:50:16.542 - Remover repetidas (id).0 - Finished processing (I=0, O=0, R=44, W=42, U=0, E=2)
+2026-10-22 13:50:16.546 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.547 - Repetidas clube B (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
+2026-10-22 13:50:16.548 - Ignorar canceladas.0 - Finished processing (I=0, O=0, R=7, W=7, U=0, E=0)
+2026-10-22 13:50:16.551 - Validar telefone.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.557 - Converter datas.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.564 - Calcular data e minutos.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.576 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.583 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.586 - Origem e clube.0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.593 - Campos finais (sem dados pessoais).0 - Finished processing (I=0, O=0, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.635 - Gravar staging (BD).0 - Finished processing (I=0, O=42, R=42, W=42, U=0, E=0)
+2026-10-22 13:50:16.639 - j_hacampo - Starting entry [T3 - Clube C (XML)]
+2026-10-22 13:50:16.697 - T3 - Clube C (XML) - Using run configuration [Pentaho local]
+2026-10-22 13:50:16.698 - t3_clube_c_xml - Expedindo in?cio para transforma??o [t3_clube_c_xml]
+2026-10-22 13:50:16.718 - Gravar staging (BD).0 - Connected to database [hacampo_pg] (commit=1000)
+2026-10-22 13:50:16.909 - Ler agenda (XML / XPath).0 - Finished processing (I=32, O=0, R=0, W=32, U=0, E=0)
+2026-10-22 13:50:16.913 - Separar hora de início.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.918 - Separar hora de fim.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.933 - Calcular minutos.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.936 - Normalizar (regex).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.948 - Validar contacto.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.964 - Traduzir tipo.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.979 - Converter data.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:16.994 - Anonimizar contacto (SHA-256).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:17.010 - Origem e clube.0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:17.040 - Campos finais (sem dados pessoais).0 - Finished processing (I=0, O=0, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:17.058 - Gravar staging (BD).0 - Finished processing (I=0, O=32, R=32, W=32, U=0, E=0)
+2026-10-22 13:50:17.062 - j_hacampo - Starting entry [T4 - Consolidar e publicar]
+2026-10-22 13:50:17.158 - T4 - Consolidar e publicar - Using run configuration [Pentaho local]
+2026-10-22 13:50:17.159 - t4_consolidar_publicar - Expedindo in?cio para transforma??o [t4_consolidar_publicar]
+2026-10-22 13:50:17.225 - Gravar ocupacao_slot (BD).0 - Connected to database [hacampo_pg] (commit=1000)
+2026-10-22 13:50:17.228 - Gravar ocupacao_diaria (BD).0 - Connected to database [hacampo_pg] (commit=1000)
+2026-10-22 13:50:17.230 - Quadro público (XML).0 - Opening output stream in encoding: UTF-8
+2026-10-22 13:50:17.410 - Ler campos e horários (BD).0 - Finished reading query, closing connection
+2026-10-22 13:50:17.411 - Ler staging (BD).0 - Finished reading query, closing connection
+2026-10-22 13:50:17.412 - Ler campos e horários (BD).0 - Finished processing (I=10, O=0, R=0, W=10, U=0, E=0)
+2026-10-22 13:50:17.412 - Ler staging (BD).0 - Finished processing (I=120, O=0, R=0, W=120, U=0, E=0)
+2026-10-22 13:50:17.416 - Ordenar reservas.0 - Finished processing (I=0, O=0, R=120, W=120, U=0, E=0)
+2026-10-22 13:50:17.423 - Remover duplicados.0 - Finished processing (I=0, O=0, R=120, W=118, U=0, E=2)
+2026-10-22 13:50:17.428 - Duplicados (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
+2026-10-22 13:50:17.431 - Ler previsão (BD).0 - Finished reading query, closing connection
+2026-10-22 13:50:17.433 - Ler previsão (BD).0 - Finished processing (I=504, O=0, R=0, W=504, U=0, E=0)
+2026-10-22 13:50:17.581 - Procurar campo (lookup).0 - Finished processing (I=0, O=0, R=128, W=118, U=0, E=0)
+2026-10-22 13:50:17.587 - Campo existe e está aberto?.0 - Finished processing (I=0, O=0, R=118, W=118, U=0, E=0)
+2026-10-22 13:50:17.596 - Nº de blocos de 30 min.0 - Finished processing (I=0, O=0, R=116, W=116, U=0, E=0)
+2026-10-22 13:50:17.597 - Rejeitadas (CSV).0 - Finished processing (I=0, O=3, R=2, W=2, U=0, E=0)
+2026-10-22 13:50:17.604 - Partir em blocos (clone).0 - Finished processing (I=0, O=0, R=116, W=316, U=0, E=0)
+2026-10-22 13:50:17.674 - Hora do bloco.0 - Optimization level set to 9.
+2026-10-22 13:50:17.886 - Calcular alertas.0 - Optimization level set to 9.
+2026-10-22 13:50:17.937 - Hora do bloco.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
+2026-10-22 13:50:17.942 - Juntar previsão do tempo.0 - Finished processing (I=0, O=0, R=820, W=316, U=0, E=0)
+2026-10-22 13:50:17.951 - Calcular alertas.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
+2026-10-22 13:50:17.957 - Ordenar blocos.0 - Finished processing (I=0, O=0, R=316, W=316, U=0, E=0)
+2026-10-22 13:50:17.958 - Marcar conflitos.0 - Optimization level set to 9.
+2026-10-22 13:50:17.964 - Contar reservas por bloco.0 - Finished processing (I=0, O=0, R=316, W=311, U=0, E=0)
+2026-10-22 13:50:17.981 - Marcar conflitos.0 - Finished processing (I=0, O=0, R=311, W=1555, U=0, E=0)
+2026-10-22 13:50:17.987 - É conflito?.0 - Finished processing (I=0, O=0, R=311, W=311, U=0, E=0)
+2026-10-22 13:50:17.987 - Data em texto.0 - Finished processing (I=0, O=0, R=311, W=622, U=0, E=0)
+2026-10-22 13:50:17.987 - Tem alerta?.0 - Finished processing (I=0, O=0, R=311, W=311, U=0, E=0)
+2026-10-22 13:50:17.987 - Ocupação por campo e dia.0 - Finished processing (I=0, O=0, R=311, W=60, U=0, E=0)
+2026-10-22 13:50:17.991 - Sem alerta.0 - Finished processing (I=0, O=0, R=297, W=297, U=0, E=0)
+2026-10-22 13:50:17.991 - Alertas (CSV).0 - Finished processing (I=0, O=15, R=14, W=14, U=0, E=0)
+2026-10-22 13:50:17.993 - Taxa de ocupação.0 - Finished processing (I=0, O=0, R=60, W=120, U=0, E=0)
+2026-10-22 13:50:17.999 - Sem conflito.0 - Finished processing (I=0, O=0, R=306, W=306, U=0, E=0)
+2026-10-22 13:50:17.999 - Conflitos (CSV).0 - Finished processing (I=0, O=6, R=5, W=5, U=0, E=0)
+2026-10-22 13:50:18.002 - Ocupação diária (CSV).0 - Finished processing (I=0, O=61, R=60, W=60, U=0, E=0)
+2026-10-22 13:50:18.005 - Quadro público (JSON).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
+2026-10-22 13:50:18.015 - Gravar ocupacao_diaria (BD).0 - Finished processing (I=0, O=60, R=60, W=60, U=0, E=0)
+2026-10-22 13:50:18.023 - Gravar ocupacao_slot (BD).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
+2026-10-22 13:50:18.051 - Quadro público (XML).0 - Finished processing (I=0, O=311, R=311, W=311, U=0, E=0)
+2026-10-22 13:50:18.056 - j_hacampo - Starting entry [Registar fim no log]
+2026-10-22 13:50:18.069 - hacampo - hacampo: processo concluído. Quadro em data/output/disponibilidade.json; conflitos, alertas e erros em data/output/*.csv.
+2026-10-22 13:50:18.070 - j_hacampo - Starting entry [Sucesso]
+2026-10-22 13:50:18.073 - j_hacampo - Finished job entry [Sucesso] (result=[true])
+2026-10-22 13:50:18.073 - j_hacampo - Finished job entry [Registar fim no log] (result=[true])
+2026-10-22 13:50:18.074 - j_hacampo - Finished job entry [T4 - Consolidar e publicar] (result=[true])
+2026-10-22 13:50:18.074 - j_hacampo - Finished job entry [T3 - Clube C (XML)] (result=[true])
+2026-10-22 13:50:18.074 - j_hacampo - Finished job entry [T2 - Clube B (JSON)] (result=[true])
+2026-10-22 13:50:18.074 - j_hacampo - Finished job entry [T1 - Clube A (CSV)] (result=[true])
+2026-10-22 13:50:18.075 - j_hacampo - Finished job entry [T0 - Previsão do tempo (API)] (result=[true])
+2026-10-22 13:50:18.075 - j_hacampo - Finished job entry [Validar XML contra XSD] (result=[true])
+2026-10-22 13:50:18.075 - j_hacampo - Finished job entry [Existem os ficheiros de entrada?] (result=[true])
+2026-10-22 13:50:18.075 - j_hacampo - Finished job entry [Preparar base de dados (SQL)] (result=[true])
+2026-10-22 13:50:18.075 - j_hacampo - Job execution finished
+2026-10-22 13:50:18.082 - Kitchen - Finished!
+2026-10-22 13:50:18.087 - Kitchen - Start=2026/10/22 13:50:12.886, Stop=2026/10/22 13:50:18.087
+2026-10-22 13:50:18.088 - Kitchen - Processing ended after 5 seconds.

@@ -1,3 +1,3 @@
-data;hora;duracao;campo;nome;tipo;obs
-2026-10-23;;1h;2;Sofia Leite;S;esqueceu-se da hora
-24/10;10:00;1h;1;Nuno Faria;P;
+data;hora;duracao;campo;tipo;obs
+2026-10-23;;1h;2;S;esqueceu-se da hora
+24/10;10:00;1h;1;P;

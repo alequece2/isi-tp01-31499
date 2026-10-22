@@ -35,7 +35,7 @@
 1. Lê os 3 clubes da base de dados e monta o URL da API com a latitude/longitude de cada um.
 2. Faz um pedido HTTP GET por clube.
 3. A resposta vem em JSON: tira-se a lista de horas, a probabilidade de chuva e se é dia.
-4. Grava tudo na tabela meteo_hora (apaga a anterior).</note>
+4. Insere ou atualiza a tabela meteo_hora (sem apagar: se a API falhar, fica a última previsão).</note>
       <xloc>52</xloc><yloc>22</yloc><width>936</width><heigth>90</heigth>
       <fontname>Segoe UI</fontname><fontsize>9</fontsize><fontbold>N</fontbold><fontitalic>N</fontitalic>
       <fontcolorred>14</fontcolorred><fontcolorgreen>58</fontcolorgreen><fontcolorblue>90</fontcolorblue>
@@ -143,17 +143,21 @@ ORDER BY codigo</sql><limit>0</limit><lookup/><execute_each_row>N</execute_each_
   </step>
   <step>
     <name>Gravar meteo_hora (BD)</name>
-    <type>TableOutput</type>
+    <type>InsertUpdate</type>
     <description/>
     <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning><method>none</method><schema_name/></partitioning>
-    <connection>hacampo_pg</connection><schema>hacampo</schema><table>meteo_hora</table><commit>1000</commit>
-    <truncate>Y</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
-    <fields><field><column_name>clube</column_name><stream_name>clube</stream_name></field><field><column_name>data_hora</column_name><stream_name>data_hora</stream_name></field><field><column_name>prob_chuva</column_name><stream_name>prob_chuva</stream_name></field><field><column_name>e_dia</column_name><stream_name>e_dia</stream_name></field></fields>
+    <connection>hacampo_pg</connection><commit>500</commit><update_bypassed>N</update_bypassed>
+    <lookup><schema>hacampo</schema><table>meteo_hora</table>
+      <key><name>clube</name><field>clube</field><condition>=</condition><name2/></key>
+      <key><name>data_hora</name><field>data_hora</field><condition>=</condition><name2/></key>
+      <value><name>clube</name><rename>clube</rename><update>N</update></value>
+      <value><name>data_hora</name><rename>data_hora</rename><update>N</update></value>
+      <value><name>prob_chuva</name><rename>prob_chuva</rename><update>Y</update></value>
+      <value><name>e_dia</name><rename>e_dia</rename><update>Y</update></value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps><input></input><output></output></remotesteps>
